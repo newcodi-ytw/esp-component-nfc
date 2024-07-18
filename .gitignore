@@ -1,5 +1,5 @@
 /build
-/private
+/demo-nfc/private
 
 *.DS_Store
 *.vscode
