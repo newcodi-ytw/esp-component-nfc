@@ -24,5 +24,5 @@ list(APPEND inc
 idf_component_register(
         SRCS ${src}
         INCLUDE_DIRS ${inc}
-        REQUIRES console nvs_flash
+        REQUIRES console nvs_flash nfc
         )
