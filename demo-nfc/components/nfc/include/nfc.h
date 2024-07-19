@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 void NFC_Run(void);
+void NFC_GetVersion(void);
 
 #ifdef __cplusplus
 }

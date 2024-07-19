@@ -17,34 +17,31 @@ Console *Console::single = nullptr;
 static void registerCustomCommands()
 {
     const std::vector<CommandArgs> no_args;
-    static const ConsoleCommand Dummy("dum", "just a dum cmd", no_args, [&](ConsoleCommand *c)
-                                      {
-        ESP_LOGI(TAG, "dummy cmd completed");
-        return 0; });
+    static const ConsoleCommand Dummy("dum", "just a dum cmd", no_args,
+        [&](ConsoleCommand *c){
+            ESP_LOGI(TAG, "dummy cmd completed");
 
-    const struct NfcCmdArgs
-    {
-        NfcCmdArgs() : 
-        action(STR1, nullptr, nullptr, "<action>", "start|stop"),
-        loopCount(INT0, "n", "loopCount", "<loopCount>", "1 2 3") {}
-        CommandArgs action;
-        CommandArgs loopCount;
-    } set_NFC_args;
-    static const ConsoleCommand SetNfcCmd("nfc", "control nfc logic", &set_NFC_args, sizeof(set_NFC_args), [&](ConsoleCommand *c) {
-        if (c->get_count_of(&NfcCmdArgs::action)) {
-            auto action = c->get_string_of(&NfcCmdArgs::action);
-            auto loopCount = c->get_count_of(&NfcCmdArgs::loopCount)?c->get_int_of(&NfcCmdArgs::loopCount):-1;
-
-            ESP_LOGI(TAG, "Action:%s Loop Count :%d", action.c_str(), loopCount);
-
-            if (action == "start") {
-                ESP_LOGI(TAG, "NFC starting ...");
-                NFC_Run();
-            } else if (action == "stop") {
-                ESP_LOGI(TAG, "NFC stopping ...");
-            }
+            return 0; 
         }
-        return 0; });
+    );
+
+    static const ConsoleCommand CMD_NFC_INIT("nfc-init", "init nfc", no_args,
+        [&](ConsoleCommand *c){
+            ESP_LOGI(TAG, "NFC starting ...");
+            NFC_Run();
+
+            return 0; 
+        }
+    );
+
+    static const ConsoleCommand CMD_NFC_PCD_VERSION("get-pcd-version", "get PCD firmware version", no_args,
+        [&](ConsoleCommand *c){
+            ESP_LOGI(TAG, "NFC Get PCD version ...");
+            NFC_GetVersion();
+
+            return 0; 
+        }
+    );
 }
 
 Console::Console()
