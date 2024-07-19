@@ -5,7 +5,7 @@ set(compile_flags
     
     "-DPHDRIVER_PN5180_CUSTOM_DEV_BOARD"
     "-DPH_OSAL_FREERTOS"
-    "-DDEBUG"
+    # "-DDEBUG"
     
     # "-DNXPBUILD__PH_LOG"
     "-DNXPBUILD__PHHAL_HW_PN5180"
@@ -79,7 +79,48 @@ set(nfc_lib
     "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/Sw/phpalI14443p4_Sw.c"
     "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/phpalI14443p4.c"
 
+    "nxp/NxpNfcRdLib/comps/phalI18000p3m3/src/Sw/phalI18000p3m3_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phalI18000p3m3/src/Sw/phalI18000p3m3_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalI18000p3m3/src/phalI18000p3m3.c"
 
+    "nxp/NxpNfcRdLib/comps/phpalI18000p3m3/src/Sw/phpalI18000p3m3_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phpalI18000p3m3/src/phpalI18000p3m3.c"
+
+    "nxp/NxpNfcRdLib/comps/phpalSli15693/src/Sw/phpalSli15693_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phpalSli15693/src/phpalSli15693.c"
+
+    "nxp/NxpNfcRdLib/comps/phpalI18092mPI/src/Sw/phpalI18092mPI_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phpalI18092mPI/src/Sw/phpalI18092mPI_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phpalI18092mPI/src/phpalI18092mPI.c"
+
+    "nxp/NxpNfcRdLib/comps/phpalFelica/src/Sw/phpalFelica_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phpalFelica/src/phpalFelica.c"
+
+    "nxp/NxpNfcRdLib/comps/phalFelica/src/Sw/phalFelica_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalFelica/src/phalFelica.c"
+
+    "nxp/NxpNfcRdLib/comps/phalICode/src/Sw/phalICode_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalICode/src/phalICode.c"
+    "nxp/NxpNfcRdLib/comps/phalICode/src/phalICode_Int.c"
+
+    "nxp/NxpNfcRdLib/comps/phalMfc/src/Sw/phalMfc_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalMfc/src/phalMfc_Int.c"
+    "nxp/NxpNfcRdLib/comps/phalMfc/src/phalMfc.c"
+
+    "nxp/NxpNfcRdLib/comps/phCryptoRng/src/Sw/phCryptoRng_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phCryptoRng/src/phCryptoRng.c"
+
+    "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Sw_Des.c"
+    "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Sw_Aes.c"
+    "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Lrp.c"
+    "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phCryptoSym/src/phCryptoSym.c"
+
+    "nxp/NxpNfcRdLib/comps/phKeyStore/src/Sw/phKeyStore_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phKeyStore/src/phKeyStore.c"
+    "nxp/NxpNfcRdLib/comps/phKeyStore/src/Rc663/phKeyStore_Rc663.c"
+    
     "nxp/Examples/NfcrdlibEx1_DiscoveryLoop/NfcrdlibEx1_DiscoveryLoop.c"
     "nxp/Examples/NfcrdlibEx1_DiscoveryLoop/src/NfcrdlibEx1_EmvcoProfile.c"
     "nxp/Examples/NfcrdlibEx1_DiscoveryLoop/src/phApp_PN5180_Init.c"

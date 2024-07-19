@@ -22,6 +22,7 @@
 
 #ifndef PH_NXPBUILD_APP_H_INC
 #define PH_NXPBUILD_APP_H_INC
+
 /** \defgroup ph_NxpBuild NXP Build
 * \brief Controls the Inclusion of required components, Inclusion SRC/DATA within components and the Build Dependencies between the components
 * @{
@@ -92,11 +93,11 @@
 #define NXPBUILD__PHPAL_MIFARE_SW                           /**< PAL MIFARE SW Component is included */
 //#define NXPBUILD__PHPAL_MIFARE_STUB                       /**< PAL MIFARE STUB Component is included */
 
-// #define NXPBUILD__PHPAL_FELICA_SW                           /**< PAL Felica SW Component is included. */
+#define NXPBUILD__PHPAL_FELICA_SW                           /**< PAL Felica SW Component is included. */
 
-// #define NXPBUILD__PHPAL_SLI15693_SW                         /**< PAL SLI 15693 Component is included. */
+#define NXPBUILD__PHPAL_SLI15693_SW                         /**< PAL SLI 15693 Component is included. */
 #ifndef NXPBUILD__PHHAL_HW_PN7640
-    // #define NXPBUILD__PHPAL_I18000P3M3_SW                   /**< PAL ISO 18000p3m3 Component is included. */
+    #define NXPBUILD__PHPAL_I18000P3M3_SW                   /**< PAL ISO 18000p3m3 Component is included. */
 #endif /* NXPBUILD__PHHAL_HW_PN7640 */
 
 #ifdef NXPBUILD__PHHAL_HW_RC663                             /**< If FE HAL is RC663, then include EPC UID PAL as required, otherwise exclude. */
@@ -104,7 +105,7 @@
 #endif
 
 #ifndef NXPBUILD__PHHAL_HW_PN76XX
-// #define NXPBUILD__PHPAL_I18092MPI_SW                        /**< PAL ISO18092 (P2P) SW Component is included. */
+#define NXPBUILD__PHPAL_I18092MPI_SW                        /**< PAL ISO18092 (P2P) SW Component is included. */
 #endif /* NXPBUILD__PHHAL_HW_PN76XX */
 
 #ifndef NXPBUILD__PHHAL_HW_RC663                            /**< If FE HAL is RC663, then exclude ISO14443 Card Mode PAL & ISO18092 Target Mode PAL, otherwise include as required. */
@@ -123,7 +124,7 @@
         defined (NXPBUILD__PHHAL_HW_RC663) || \
         defined (NXPBUILD__PHHAL_HW_PN7462AU) || \
         defined (NXPBUILD__PHHAL_HW_PN7642)
-            // #define NXPBUILD__PHAC_DISCLOOP_LPCD       /**< SRC to enable LPCD is included. */
+            #define NXPBUILD__PHAC_DISCLOOP_LPCD       /**< SRC to enable LPCD is included. */
     #endif
 
     #ifdef  NXPBUILD__PHPAL_I14443P3A_SW
@@ -192,7 +193,7 @@
 
 //#define NXPBUILD__PH_CIDMANAGER_SW                            /**< CID Manager SW Component is included. */
 
-// #define NXPBUILD__PH_KEYSTORE_SW                                /**< SW KeyStore Component is included. */
+#define NXPBUILD__PH_KEYSTORE_SW                                /**< SW KeyStore Component is included. */
 
 #if defined(NXPBUILD__PHHAL_HW_RC663) && !defined(NXPBUILD__PH_KEYSTORE_SW)
     #define NXPBUILD__PH_KEYSTORE_RC663                         /**< RC663 KeyStore Component is included. */
@@ -200,9 +201,9 @@
 
 //#define NXPBUILD__PH_NDA_MFDF                                 /**< MIFARE DESFire contactless IC */
 
-// #define NXPBUILD__PH_CRYPTOSYM_SW                             /**< Crypto Symbols SW Component is included. */
+#define NXPBUILD__PH_CRYPTOSYM_SW                             /**< Crypto Symbols SW Component is included. */
 
-// #define NXPBUILD__PH_CRYPTORNG_SW                             /**< Crypto RNG SW Component is included. */
+#define NXPBUILD__PH_CRYPTORNG_SW                             /**< Crypto RNG SW Component is included. */
 
 /*********************************************************************************************************************************************************************************/
 
@@ -278,7 +279,7 @@
 #endif /* NXPBUILD__PHLN_LLCP_SW */
 
 /* Enable/disable Debugging */
-#define NXPBUILD__PH_DEBUG                                   /**< TODO: To be checked if required */
+/*#define NXPBUILD__PH_DEBUG*/                                   /**< TODO: To be checked if required */
 
 /** @}
 * end of ph_NxpBuild

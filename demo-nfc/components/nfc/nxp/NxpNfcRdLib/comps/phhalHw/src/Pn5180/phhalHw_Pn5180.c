@@ -253,7 +253,7 @@ phStatus_t phhalHw_Pn5180_Init(
     uint16_t wRxBufSize
     )
 {
-    MY_DEBUG_PRINT("");
+    // MY_DEBUG_PRINT("");
     phStatus_t PH_MEMLOC_REM statusTmp;
     uint8_t    PH_MEMLOC_REM bFirmwareVer[2];
     uint8_t PH_MEMLOC_BUF bDigitalDelayCfg;
@@ -988,7 +988,7 @@ phStatus_t phhalHw_Pn5180_Wait(
     uint16_t wTimeout
     )
 {
-    MY_DEBUG_PRINT("");
+    // MY_DEBUG_PRINT("");
     phStatus_t  PH_MEMLOC_REM  statusTmp;
     uint32_t    PH_MEMLOC_REM dwLoadValue;
     uint32_t    PH_MEMLOC_REM wPrescaler;

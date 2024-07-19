@@ -481,6 +481,7 @@ phStatus_t phhalHw_PN7462AU_SetListenParam(phhalHw_PN7462AU_DataParams_t * pData
 #endif /* NXPBUILD__PHHAL_HW_PN7462AU */
 
 #ifdef NXPBUILD__PHHAL_HW_PN5180
+
 /**
  * \defgroup phhalHw_Pn5180 component : Pn5180
  * \brief Pn5180 HAL component

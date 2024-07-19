@@ -39,3 +39,8 @@ void NFC_ReadE2Prom_Version(void)
 
     printf("(%d)wFirmwareVer: 0x%x\n", wStatus, bFirmwareVer);
 }
+
+void NFC_PollMode(void)
+{
+    
+}
