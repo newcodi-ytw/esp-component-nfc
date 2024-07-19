@@ -1,12 +1,14 @@
 #include <stdint.h>
 
-#include "phDriver.h"
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 
 #include "driver/gpio.h"
+
+#include "Board_Pn5180_CustomDev.h"
+
+#include "phDriver.h"
 
 #undef portYIELD_FROM_ISR
 #define portYIELD_FROM_ISR(...)        {traceISR_EXIT_TO_SCHEDULER(); _frxt_setup_switch();}
@@ -52,9 +54,20 @@ static void gpio_isr(void *param) {
 }
 
 phStatus_t phDriver_GPIOInit() {
-    printf("GPIO init!\n");
     isr_events = xEventGroupCreate();
-    if(ESP_OK != gpio_install_isr_service(0)) return PH_DRIVER_ERROR;
+    if(ESP_OK != gpio_install_isr_service(0)) 
+    {
+        printf("GPIO init PH_DRIVER_ERROR\n");
+        return PH_DRIVER_ERROR;
+    }
+
+    PIN_FUNC_SELECT(PIN_BUSY_REG, PIN_FUNC_GPIO);
+	gpio_set_direction(PIN_BUSY, GPIO_MODE_INPUT);
+
+    PIN_FUNC_SELECT(PIN_RESET_REG, PIN_FUNC_GPIO);
+	gpio_set_direction(PIN_RESET, GPIO_MODE_OUTPUT);
+
+    printf("GPIO init!\n");
     return PH_DRIVER_SUCCESS;
 }
 

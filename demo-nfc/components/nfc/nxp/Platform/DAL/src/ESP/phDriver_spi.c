@@ -18,21 +18,21 @@ esp_err_t init_spi(spi_device_handle_t *dev) {
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
 
-        .max_transfer_sz = 0,
+        .max_transfer_sz = 512,
     };
 
     spi_device_interface_config_t dev_cfg = {
-        .clock_speed_hz = 4000000,
+        .clock_speed_hz = 1000*1000,
         .mode = 0,
         .spics_io_num = PIN_SSEL,
-        .queue_size = 4,
+        .queue_size = 10,
         .pre_cb = NULL,
     };
 
-    rv = spi_bus_initialize(SPI3_HOST, &bus_cfg, 2);
+    rv = spi_bus_initialize(HSPI_HOST, &bus_cfg, 1);
     ESP_ERROR_CHECK(rv);
 
-    rv = spi_bus_add_device(SPI3_HOST, &dev_cfg, dev);
+    rv = spi_bus_add_device(HSPI_HOST, &dev_cfg, dev);
     ESP_ERROR_CHECK(rv);
 
     return rv;

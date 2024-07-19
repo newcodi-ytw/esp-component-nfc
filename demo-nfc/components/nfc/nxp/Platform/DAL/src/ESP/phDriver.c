@@ -50,7 +50,7 @@ phStatus_t phbalReg_Exchange(void     *pDataParams,
     if(wTxLength && pTxBuffer != NULL) {
         ESP_LOGD(TAG, "Write data:");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, pTxBuffer, wTxLength, ESP_LOG_DEBUG);
-        // ESP_LOG_BUFFER_HEXDUMP("NFC>>", pTxBuffer, wTxLength, ESP_LOG_INFO);
+        ESP_LOG_BUFFER_HEXDUMP("NFC>>", pTxBuffer, wTxLength, ESP_LOG_DEBUG);
 
         // Do the write transaction.
         ESP_ERROR_CHECK( dal_spi_transact(g_spi_dev,
@@ -73,7 +73,7 @@ phStatus_t phbalReg_Exchange(void     *pDataParams,
 
         ESP_LOGD(TAG, "Read data:\n");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, pRxBuffer, wTxLength, ESP_LOG_DEBUG);
-        // ESP_LOG_BUFFER_HEXDUMP("NFC--", pRxBuffer, wTxLength, ESP_LOG_INFO);
+        ESP_LOG_BUFFER_HEXDUMP("NFC--", pRxBuffer, wTxLength, ESP_LOG_DEBUG);
         *pRxLength = len;
     }
 
