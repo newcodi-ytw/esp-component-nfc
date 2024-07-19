@@ -28,11 +28,6 @@
 
 #include "driver/gpio.h"
 
-#include "freertos/FreeRTOS.h"
-
-#undef portYIELD_FROM_ISR
-#define portYIELD_FROM_ISR(...)        {traceISR_EXIT_TO_SCHEDULER(); _frxt_setup_switch();}
-
 #define BOARD_DEVKITC
 
 #ifdef BOARD_DEVKITC

@@ -878,7 +878,7 @@ phStatus_t phhalHw_FieldOff(
         return status;
     }
 
-    printf("%s %d\n", __FUNCTION__, PH_GET_COMPID(pDataParams));
+    // printf("%s %d\n", __FUNCTION__, PH_GET_COMPID(pDataParams));
 
     /* perform operation on active layer */
     switch (PH_GET_COMPID(pDataParams))

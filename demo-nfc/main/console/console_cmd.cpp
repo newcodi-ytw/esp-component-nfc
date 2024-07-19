@@ -25,7 +25,7 @@ static void registerCustomCommands()
         }
     );
 
-    static const ConsoleCommand CMD_NFC_INIT("nfc-init", "init nfc", no_args,
+    static const ConsoleCommand NFC_INIT("nfc-init", "init nfc", no_args,
         [&](ConsoleCommand *c){
             ESP_LOGI(TAG, "NFC starting ...");
             NFC_Run();
@@ -34,11 +34,19 @@ static void registerCustomCommands()
         }
     );
 
-    static const ConsoleCommand CMD_NFC_PCD_VERSION("get-pcd-version", "get PCD firmware version", no_args,
+    static const ConsoleCommand GET_PCD_VER("get-pcd-version", "get PCD firmware version", no_args,
         [&](ConsoleCommand *c){
             ESP_LOGI(TAG, "NFC Get PCD version ...");
             NFC_GetVersion();
 
+            return 0; 
+        }
+    );
+    
+    static const ConsoleCommand NFC_READ_E2P("read-version", "read firmware version by eep", no_args,
+        [&](ConsoleCommand *c){
+            ESP_LOGI(TAG, "NFC Read PCD version ...");
+            NFC_ReadE2Prom_Version();
             return 0; 
         }
     );

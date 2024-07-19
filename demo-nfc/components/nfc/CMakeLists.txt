@@ -1,5 +1,7 @@
 set(compile_flags 
     "-DxPortIsInsideInterrupt=xPortInIsrContext"
+    "-isystem"
+    "$(IDF_PATH)/components/freertos/include/freertos"
     
     "-DPHDRIVER_PN5180_CUSTOM_DEV_BOARD"
     "-DPH_OSAL_FREERTOS"
@@ -11,6 +13,7 @@ set(compile_flags
 
     "-Wno-error=memset-elt-size"
     "-Wno-error=duplicate-decl-specifier"
+    "-Wno-error=implicit-function-declaration"
 )
 
 set(nfc_lib 
@@ -90,6 +93,7 @@ set(nfc_lib_inc
     "nxp/Platform/DAL/src/ESP/include"
 
     "nxp/NxpNfcRdLib/comps"
+    "nxp/NxpNfcRdLib/comps/phhalHw/src/Pn5180/"
     "nxp/NxpNfcRdLib/intfs"
     "nxp/NxpNfcRdLib/types"
 

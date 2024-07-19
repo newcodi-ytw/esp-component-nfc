@@ -213,13 +213,14 @@ void DiscoveryLoop_Demo(void  *pDataParams)
 
     /* Start in poll mode */
     wEntryPoint = PHAC_DISCLOOP_ENTRY_POINT_POLL;
+    // wEntryPoint = PHAC_DISCLOOP_ENTRY_POINT_LISTEN;
     status = PHAC_DISCLOOP_LPCD_NO_TECH_DETECTED;
 
     /* Switch off RF field */
     statustmp = phhalHw_FieldOff(pHal);
     CHECK_STATUS(statustmp);
 
-    DEBUG_PRINTF("DiscoveryLoop_Demo: started \n");
+    MY_DEBUG_PRINT("started \n");
 
     while(1)
     {
@@ -246,10 +247,9 @@ void DiscoveryLoop_Demo(void  *pDataParams)
 #endif /* PH_EXAMPLE1_LPCD_ENABLE*/
 
         /* Start discovery loop */
-        printf("%s: %d %d - s\n", __FUNCTION__, wEntryPoint, status);
+        MY_DEBUG_PRINT("%d %d - s\n", wEntryPoint, status);
         status = phacDiscLoop_Run(pDataParams, wEntryPoint);
-        printf("%s: %d %d - e\n", __FUNCTION__, wEntryPoint, status);
-        
+        MY_DEBUG_PRINT("%d %d - e\n", wEntryPoint, status);
 
         if(bProfile == PHAC_DISCLOOP_PROFILE_EMVCO)
         {
@@ -287,7 +287,7 @@ uint16_t NFCForumProcess(uint16_t wEntryPoint, phStatus_t DiscLoopStatus)
     uint8_t       bIndex;
     uint16_t      wReturnEntryPoint;
 
-    printf("%s %d %d\n", __FUNCTION__, wEntryPoint, DiscLoopStatus);
+    MY_DEBUG_PRINT("%s %d %d\n", __FUNCTION__, wEntryPoint, DiscLoopStatus);
 
     if(wEntryPoint == PHAC_DISCLOOP_ENTRY_POINT_POLL)
     {

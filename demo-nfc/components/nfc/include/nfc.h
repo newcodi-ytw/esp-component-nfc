@@ -7,6 +7,7 @@ extern "C" {
 
 void NFC_Run(void);
 void NFC_GetVersion(void);
+void NFC_ReadE2Prom_Version(void);
 
 #ifdef __cplusplus
 }

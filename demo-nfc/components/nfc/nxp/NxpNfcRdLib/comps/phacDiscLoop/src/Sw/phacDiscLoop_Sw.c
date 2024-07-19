@@ -264,7 +264,7 @@ phStatus_t phacDiscLoop_Sw_Run(
                                )
 {
     phStatus_t PH_MEMLOC_REM wDiscloopStatus;
-    printf("%s\n", __FUNCTION__);
+    // MY_DEBUG_PRINT("");
 
     /* Disable Emd Check */
     PH_CHECK_SUCCESS_FCT(wDiscloopStatus, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_SET_EMD, PH_OFF));
@@ -294,7 +294,7 @@ phStatus_t phacDiscLoop_Sw_Run(
             }
         }
 #endif /* NXPBUILD__PHAC_DISCLOOP_LPCD */
-
+        // MY_DEBUG_PRINT("");
         /* Check for active poll configuration */
         if((0U != (pDataParams->bActPollTechCfg))
            && (pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_DETECTION))
@@ -315,7 +315,7 @@ phStatus_t phacDiscLoop_Sw_Run(
             PH_CHECK_SUCCESS_FCT(wDiscloopStatus, phhalHw_FieldOff(pDataParams->pHalDataParams));
             PH_CHECK_SUCCESS_FCT(wDiscloopStatus, phhalHw_Wait(pDataParams->pHalDataParams, PHHAL_HW_TIME_MICROSECONDS, pDataParams->wActPollGTimeUs));
         }
-
+        // MY_DEBUG_PRINT("");
         /* Check for passive poll configuration */
         if(0U != (pDataParams->bPasPollTechCfg))
         {
