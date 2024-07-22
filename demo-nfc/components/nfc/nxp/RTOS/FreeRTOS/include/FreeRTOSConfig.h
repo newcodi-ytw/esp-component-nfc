@@ -234,7 +234,7 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
     /* Constants related to the generation of run time stats. */
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
     
-    #ifndef portGET_RUN_TIME_COUNTER_VALUE
+    #if 0
         #define portGET_RUN_TIME_COUNTER_VALUE()            0
     #endif
 

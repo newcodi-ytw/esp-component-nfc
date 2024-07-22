@@ -1,6 +1,8 @@
 #include <map>
 #include <vector>
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "esp_console.h"
 #include "esp_log.h"
 
@@ -17,15 +19,54 @@ Console *Console::single = nullptr;
 static void registerCustomCommands()
 {
     const std::vector<CommandArgs> no_args;
-    static const ConsoleCommand Dummy("dum", "just a dum cmd", no_args,
+    static const ConsoleCommand Cmd_Testing("test", "testing cmd", no_args,
         [&](ConsoleCommand *c){
-            ESP_LOGI(TAG, "dummy cmd completed");
+            ESP_LOGI(TAG, "testing cmd completed");
 
             return 0; 
         }
     );
+    
+    static const ConsoleCommand Cmd_SoftRestart("restart", "reboot esp cmd", no_args,
+        [&](ConsoleCommand *c){
+            ESP_LOGI(TAG, "Rebooting esp ....");
+	        esp_restart();
+            return 0; 
+        }
+    );    
+    
+    static const ConsoleCommand Cmd_GetMem("mem", "memory info", no_args,
+        [&](ConsoleCommand *c){
+            uint32_t free_dram = esp_get_free_heap_size();
+            uint32_t free_iram = heap_caps_get_free_size(MALLOC_CAP_INTERNAL) - free_dram;
+            uint32_t free_mini_heap = heap_caps_get_minimum_free_size(MALLOC_CAP_DEFAULT);
+            printf("free memory=%d (DRAM/heap), %d (IRAM)\n", free_dram, free_iram);
+            printf("free mini. heap=%d\n", free_mini_heap);
 
-    static const ConsoleCommand NFC_INIT("nfc-init", "init nfc", no_args,
+            return 0; 
+        }
+    );    
+    
+    static const ConsoleCommand Cmd_RTOS_GetTask("rtos-get-task", "rtos task", no_args,
+        [&](ConsoleCommand *c){
+            const size_t bytes_per_task = 60;//40; /* see vTaskList description */
+            char *task_list_buffer = (char*) malloc(uxTaskGetNumberOfTasks() * bytes_per_task);
+            if (task_list_buffer)
+            {
+                vTaskList(task_list_buffer);
+                fputs("Task Name\tStatus\tPrio\tHWM\tTask#", stdout);
+        #ifdef CONFIG_FREERTOS_VTASKLIST_INCLUDE_COREID
+                fputs("\tAffinity", stdout);
+        #endif
+                fputs("\n", stdout);
+                fputs(task_list_buffer, stdout);
+                free(task_list_buffer);
+            }
+            return 0; 
+        }
+    );
+
+    static const ConsoleCommand Cmd_NfcInit("nfc-init", "init nfc", no_args,
         [&](ConsoleCommand *c){
             ESP_LOGI(TAG, "NFC starting ...");
             NFC_Run();
@@ -34,7 +75,7 @@ static void registerCustomCommands()
         }
     );
 
-    static const ConsoleCommand GET_PCD_VER("get-pcd-version", "get PCD firmware version", no_args,
+    static const ConsoleCommand Cmd_GetPCDVersion("get-pcd-version", "get PCD firmware version", no_args,
         [&](ConsoleCommand *c){
             ESP_LOGI(TAG, "NFC Get PCD version ...");
             NFC_GetVersion();
@@ -43,9 +84,9 @@ static void registerCustomCommands()
         }
     );
     
-    static const ConsoleCommand NFC_READ_E2P("read-version", "read firmware version by eep", no_args,
+    static const ConsoleCommand Cmd_ReadVerByEEP("read-version", "read firmware version by eep", no_args,
         [&](ConsoleCommand *c){
-            ESP_LOGI(TAG, "NFC Read PCD version ...");
+            ESP_LOGI(TAG, "NFC Read PCD version eep ...");
             NFC_ReadE2Prom_Version();
             return 0; 
         }
