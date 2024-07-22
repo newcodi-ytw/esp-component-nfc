@@ -167,7 +167,7 @@ int NfcrdlibEx1_DiscoveryLoop_main(void)
 #endif
     } while(0);
 
-    // while(bInfLoop) phOsal_ThreadDelay(1000); /* Comes here if initialization failure or scheduler exit due to error */
+    // while(bInfLoop) phOsal_ThreadDelay(1); /* Comes here if initialization failure or scheduler exit due to error */
 
     return 0;
 }
@@ -276,6 +276,8 @@ void DiscoveryLoop_Demo(void  *pDataParams)
             CHECK_STATUS(statustmp);
         }
     }
+
+    MY_DEBUG_PRINT("ended \n");
 }
 
 uint16_t NFCForumProcess(uint16_t wEntryPoint, phStatus_t DiscLoopStatus)

@@ -58,7 +58,7 @@
             #define DISC_DEMO_TASK_STACK     (1650)
         #endif /* defined( __PN74XXXX__) || defined(__PN76XX__) */
     #endif /* PHOSAL_FREERTOS_STATIC_MEM_ALLOCATION */
-    #define DISC_DEMO_TASK_PRIO              2
+    #define DISC_DEMO_TASK_PRIO              0
 #endif /* PH_OSAL_FREERTOS */
 
 #ifdef PH_OSAL_LINUX

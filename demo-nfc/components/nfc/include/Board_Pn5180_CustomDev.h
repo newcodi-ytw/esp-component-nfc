@@ -42,10 +42,13 @@
 #define PIN_SSEL  GPIO_NUM_25
 #define PIN_SSEL_REG  IO_MUX_GPIO25_REG
 
-#define PIN_IRQ   23
-#define PIN_AUX1  22
-#define PIN_DWL   21
-#define PIN_GPO1  19
+#define PIN_IRQ   GPIO_NUM_34
+#define PIN_DWL   GPIO_NUM_33
+
+#define PIN_AUX1        GPIO_NUM_NC
+#define PIN_GPO1_GREEN  GPIO_NUM_23
+#define PIN_GPO1_BLUE   GPIO_NUM_13
+#define PIN_GPO1_RED    GPIO_NUM_22
 #endif
 
 #define PIN_MASK(n) ((uint64_t)1 << (n))

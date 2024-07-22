@@ -6,6 +6,9 @@
 #include "esp_console.h"
 #include "esp_log.h"
 
+#include "driver/gpio.h"
+#include "Board_Pn5180_CustomDev.h"
+
 #include "nfc.h"
 
 #include "console_helper.hpp"
@@ -23,6 +26,22 @@ static void registerCustomCommands()
         [&](ConsoleCommand *c){
             ESP_LOGI(TAG, "testing cmd completed");
 
+            return 0; 
+        }
+    );
+
+    const struct GpioOutput {
+        GpioOutput(): pinNum(INT1, nullptr, nullptr, "<pinNum>", "pin number"), 
+                    level(INT1, nullptr, nullptr, "<level>", "pin output"){}
+        CommandArgs pinNum;
+        CommandArgs level;
+    } led_state_args;
+    static const ConsoleCommand Cmd_ToggleLED("pin-set", "set pin output level", &led_state_args, sizeof(led_state_args),
+        [&](ConsoleCommand *c){
+            gpio_num_t pinNum = (gpio_num_t)(c->get_int_of(&GpioOutput::pinNum));
+            auto level = c->get_int_of(&GpioOutput::level)>0?true:false;
+            ESP_LOGI(TAG, "set GPIO-%d = %d", pinNum, level);
+            gpio_set_level(pinNum, level);
             return 0; 
         }
     );
@@ -97,6 +116,7 @@ Console::Console()
 {
     // init console REPL environment
     esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
+    repl_config.task_priority = 0;
     esp_console_dev_uart_config_t uart_config = ESP_CONSOLE_DEV_UART_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_console_new_repl_uart(&uart_config, &repl_config, &s_repl));
 

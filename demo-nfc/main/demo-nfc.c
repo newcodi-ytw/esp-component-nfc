@@ -7,6 +7,7 @@
 #include "nvs_flash.h"
 #include "esp_log.h"
 
+#include "nfc.h"
 #include "console_cmd.hpp"
 
 const char *TAG = "demo-nfc";
@@ -16,6 +17,8 @@ void app_main(void)
     ESP_ERROR_CHECK(nvs_flash_init());
 
     ConsoleStart();
+
+    // NFC_Run();
 
     while(1)
     {
