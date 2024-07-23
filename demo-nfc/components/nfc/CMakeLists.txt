@@ -3,17 +3,18 @@ set(compile_flags
     "-isystem"
     "$(IDF_PATH)/components/freertos/include/freertos"
     
-    "-DPHDRIVER_PN5180_CUSTOM_DEV_BOARD"
-    "-DPH_OSAL_FREERTOS"
-    # "-DDEBUG"
-    
-    # "-DNXPBUILD__PH_LOG"
-    "-DNXPBUILD__PHHAL_HW_PN5180"
-    "-DNXPBUILD_CUSTOMER_HEADER_INCLUDED"
-
     "-Wno-error=memset-elt-size"
     "-Wno-error=duplicate-decl-specifier"
     "-Wno-error=implicit-function-declaration"
+    "-Wno-error=unused-but-set-parameter"
+    
+    "-DDEBUG"
+    "-DNXPBUILD__PHHAL_HW_PN5180"
+    "-DPH_OSAL_FREERTOS"
+    "-DPHDRIVER_PN5180_CUSTOM_DEV_BOARD"
+
+    "-DPHFL_APP_NXBUILD_CONFIG"
+    "-DNXPBUILD_CUSTOMER_HEADER_INCLUDED"
 )
 
 set(nfc_lib 
@@ -38,7 +39,45 @@ set(nfc_lib
     "nxp/NxpNfcRdLib/comps/phalT1T/src/Sw/phalT1T_Sw.c"
     "nxp/NxpNfcRdLib/comps/phhalHw/src/phhalHw.c"
 
+    "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Transport_Connection.c"
+    "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Transport_Connectionless.c"
+    "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Timers.c"
+    "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Mac.c"
+    "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Transport.c"
+    "nxp/NxpNfcRdLib/comps/phlnLlcp/src/phlnLlcp.c"
+
+    "nxp/NxpNfcRdLib/comps/phalMfpEVx/src/Sw/phalMfpEVx_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalMfpEVx/src/phalMfpEVx.c"
+    "nxp/NxpNfcRdLib/comps/phalMfpEVx/src/phalMfpEVx_Int.c"
+
+    "nxp/NxpNfcRdLib/comps/phalMfNtag42XDna/src/Sw/phalMfNtag42XDna_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalMfNtag42XDna/src/Sw/phalMfNtag42XDna_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phalMfNtag42XDna/src/phalMfNtag42XDna.c"
+    "nxp/NxpNfcRdLib/comps/phalMfNtag42XDna/src/phalMfNtag42XDna_Int.c"
+
+    "nxp/NxpNfcRdLib/comps/phalVca/src/Sw/phalVca_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalVca/src/phalVca_Int.c"
+    "nxp/NxpNfcRdLib/comps/phalVca/src/phalVca.c"
+
+    "nxp/NxpNfcRdLib/comps/phceT4T/src/Sw/phceT4T_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phceT4T/src/Sw/phceT4T_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phceT4T/src/phceT4T.c"
+
+    "nxp/NxpNfcRdLib/comps/phalMfdfLight/src/Sw/phalMfdfLight_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phalMfdfLight/src/Sw/phalMfdfLight_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalMfdfLight/src/phalMfdfLight_Int.c"
+    "nxp/NxpNfcRdLib/comps/phalMfdfLight/src/phalMfdfLight.c"
+
+    "nxp/NxpNfcRdLib/comps/phalMfdfEVx/src/Sw/phalMfdfEVx_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phalMfdfEVx/src/Sw/phalMfdfEVx_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phalMfdfEVx/src/phalMfdfEVx.c"
+    "nxp/NxpNfcRdLib/comps/phalMfdfEVx/src/phalMfdfEVx_Int.c"
+
+    "nxp/NxpNfcRdLib/comps/phTMIUtils/src/phTMIUtils.c"
     "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_Initialization.c"
+
     "nxp/NxpNfcRdLib/comps/phalMfdf/src/Sw/phalMfdf_Sw_Int.c"
     "nxp/NxpNfcRdLib/comps/phalMfdf/src/Sw/phalMfdf_Sw.c"
     "nxp/NxpNfcRdLib/comps/phalMfdf/src/phalMfdf_Int.c"
@@ -78,6 +117,14 @@ set(nfc_lib
     "nxp/NxpNfcRdLib/comps/phpalI14443p3b/src/phpalI14443p3b.c"
     "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/Sw/phpalI14443p4_Sw.c"
     "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/phpalI14443p4.c"
+
+    "nxp/NxpNfcRdLib/comps/phpalI14443p4mC/src/Sw/phpalI14443p4mC_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phpalI14443p4mC/src/Sw/phpalI14443p4mC_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phpalI14443p4mC/src/phpalI14443p4mC.c"
+
+    "nxp/NxpNfcRdLib/comps/phpalI18092mT/src/Sw/phpalI18092mT_Sw.c"
+    "nxp/NxpNfcRdLib/comps/phpalI18092mT/src/Sw/phpalI18092mT_Sw_Int.c"
+    "nxp/NxpNfcRdLib/comps/phpalI18092mT/src/phpalI18092mT.c"
 
     "nxp/NxpNfcRdLib/comps/phalI18000p3m3/src/Sw/phalI18000p3m3_Sw_Int.c"
     "nxp/NxpNfcRdLib/comps/phalI18000p3m3/src/Sw/phalI18000p3m3_Sw.c"
