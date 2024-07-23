@@ -3,6 +3,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
 
+#include "ph_Status.h"
 #include "phDriver.h"
 
 // The time, in ticks, to block waiting for timer operations.
@@ -16,11 +17,19 @@ typedef struct {
 
 static void timer_expiry_cb(TimerHandle_t xTimer) {
     // Just call the callback.
-    ((pphDriver_TimerCallBck_t)pvTimerGetTimerID(xTimer))();
+    pphDriver_TimerCallBck_t cb = (pphDriver_TimerCallBck_t)pvTimerGetTimerID(xTimer);
+    if(cb)
+    {
+        // MY_DEBUG_PRINT("timer cb()\n");
+        cb();
+    }
 }
 
 phStatus_t phDriver_TimerStart(phDriver_Timer_Unit_t eTimerUnit, uint32_t dwTimePeriod, pphDriver_TimerCallBck_t pTimerCallback) {
-    TickType_t period = pdMS_TO_TICKS(dwTimePeriod);
+    // TickType_t period = pdMS_TO_TICKS(dwTimePeriod);
+
+    //convert to ms unit
+    TickType_t period = dwTimePeriod;
     switch(eTimerUnit) {
         case PH_DRIVER_TIMER_SECS:
             period *= 1000;
@@ -32,20 +41,21 @@ phStatus_t phDriver_TimerStart(phDriver_Timer_Unit_t eTimerUnit, uint32_t dwTime
             // Do nothing if it's milliseconds.
             break;
     }
-
-    // printf("timer start: %d\n", period);
+    MY_DEBUG_PRINT("timer start: %d MS\n", period);
+    TickType_t tick = pdMS_TO_TICKS(period);
+    if(tick == 0) tick = 1;
 
     // If there's no callback, we just need a delay.
     if(pTimerCallback == NULL) {
-        vTaskDelay(period);
+        vTaskDelay(tick);
     } else {
         // If it doesn't exist, create it.
         if(g_timer == NULL) {
-            g_timer = xTimerCreate("NFCTimer", 10, pdFALSE, pTimerCallback, timer_expiry_cb);
+            g_timer = xTimerCreate("phDriver_TimerStart", tick, pdFALSE, pTimerCallback, timer_expiry_cb);
         }
 
         // Set the period, then start/restart it.
-        xTimerChangePeriod(g_timer, period, BLOCK_TIME);
+        xTimerChangePeriod(g_timer, tick, BLOCK_TIME);
         xTimerReset(g_timer, BLOCK_TIME);
     }
     

@@ -21,15 +21,15 @@
 #include <phOsal.h>
 
 #ifdef PH_OSAL_FREERTOS
-#include <freertos/FreeRTOS.h>
-#include <freertos/event_groups.h>
+#include <FreeRTOS.h>
+#include <event_groups.h>
 #include "phOsal_Freertos.h"
-#include "freertos/semphr.h"
-#include "freertos/task.h"
-#include "freertos/queue.h"
-#include "freertos/timers.h"
+#include "semphr.h"
+#include "task.h"
+#include "queue.h"
+#include "timers.h"
 #include <projdefs.h>
-#include <freertos/portmacro.h>
+#include <portmacro.h>
 
 /* *****************************************************************************************************************
  * Internal Definitions

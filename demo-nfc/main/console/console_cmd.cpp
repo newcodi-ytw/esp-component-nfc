@@ -94,15 +94,6 @@ static void registerCustomCommands()
         }
     );
 
-    static const ConsoleCommand Cmd_GetPCDVersion("get-pcd-version", "get PCD firmware version", no_args,
-        [&](ConsoleCommand *c){
-            ESP_LOGI(TAG, "NFC Get PCD version ...");
-            NFC_GetVersion();
-
-            return 0; 
-        }
-    );
-    
     static const ConsoleCommand Cmd_ReadVerByEEP("read-version", "read firmware version by eep", no_args,
         [&](ConsoleCommand *c){
             ESP_LOGI(TAG, "NFC Read PCD version eep ...");

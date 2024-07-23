@@ -6,12 +6,12 @@
 
 #include "driver/gpio.h"
 
-#include "Board_Pn5180_CustomDev.h"
+#include "BoardSelection.h"
 
 #include "phDriver.h"
 
-#undef portYIELD_FROM_ISR
-#define portYIELD_FROM_ISR(...)        {traceISR_EXIT_TO_SCHEDULER(); _frxt_setup_switch();}
+// #undef portYIELD_FROM_ISR
+// #define portYIELD_FROM_ISR(...)        {traceISR_EXIT_TO_SCHEDULER(); _frxt_setup_switch();}
 
 extern void CLIF_IRQHandler();
 
@@ -56,7 +56,7 @@ static void gpio_isr(void *param) {
 
     CLIF_IRQHandler();
 
-    if(xResult) 
+    if(xResult == pdPASS) 
     {
         portYIELD_FROM_ISR(do_switch);
     }
@@ -120,13 +120,10 @@ phStatus_t phDriver_PinConfig(uint32_t               dwPinNumber,
     if(err != ESP_OK) return PH_DRIVER_ERROR;
 
     // if(intr == GPIO_INTR_DISABLE) return PH_DRIVER_SUCCESS;
+    err = gpio_set_intr_type(dwPinNumber, intr);
 
-    // err = gpio_set_intr_type(dwPinNumber, intr);
     // Set the interrupt handler.
     EventBits_t mask = (1 << (dwPinNumber & 0x1f));
-
-    // printf("gpio-isr args:%d\n", mask);
-
     err = gpio_isr_handler_add(dwPinNumber, gpio_isr, (void *)mask);
 
     return err == ESP_OK ? PH_DRIVER_SUCCESS : PH_DRIVER_ERROR;

@@ -24,7 +24,7 @@
 
 #include <ph_TypeDefs.h>
 
-#define MY_DEBUG_PRINT(format, ...) printf("%s: L:%d "format" \n", __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#define MY_DEBUG_PRINT(format, ...) printf("%s(%d): "format" \n", __FUNCTION__, __LINE__, ##__VA_ARGS__);
 
 #ifndef NXPBUILD_DELETE
 #include <ph_NxpBuild.h>
