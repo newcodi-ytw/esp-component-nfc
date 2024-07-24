@@ -1312,7 +1312,7 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
     uint8_t     PH_MEMLOC_REM aCrc[2];
     uint8_t     PH_MEMLOC_REM bBackup = 0U;
     uint8_t     PH_MEMLOC_REM bRfActiveErrCause = 0U;
-
+MY_DEBUG_PRINT();
     /* Now wait for the IRQ */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_WaitIrq(
         pDataParams,
@@ -1320,10 +1320,10 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
         PH_OFF,
         dwIrqWaitFor,
         &dwIrqReg));
-
+MY_DEBUG_PRINT();
     /* If in active mode, retrieve the content of the RF_STATUS register */
     if (pDataParams->bActiveMode == PH_ON)
-    {
+    {MY_DEBUG_PRINT();
         PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_ReadRegister(pDataParams, RF_STATUS, &dwRegister));
     }
 
@@ -1348,7 +1348,7 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
    {
         /* Reset after timeout behavior */
         if (pDataParams->bRfResetAfterTo != PH_OFF)
-        {
+        {MY_DEBUG_PRINT();
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_FieldReset(pDataParams));
         }
 
@@ -1444,7 +1444,7 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
 #endif
         /* Read the RX_STATUS */
         PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_ReadRegister(pDataParams, RX_STATUS, &dwValue));
-
+MY_DEBUG_PRINT();
         if(pDataParams->bRxMultiple == PH_ON)
         {
             wTmpBufferLen = (uint16_t)((dwValue & RX_STATUS_RX_NUM_BYTES_RECEIVED_MASK) |
@@ -1457,7 +1457,7 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
         }
 
         if(wTmpBufferLen != 0U)
-        {
+        {MY_DEBUG_PRINT();
             /* Prepare the command for reading the RX FIFO of the Pn5180 */
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_RetrieveRxData(
                 pDataParams,
@@ -1468,7 +1468,7 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
         /* Extract RX last bits */
         dwTemp = dwValue & RX_STATUS_RX_NUM_LAST_BITS_MASK;
         dwTemp = dwTemp >> RX_STATUS_RX_NUM_LAST_BITS_POS;
-
+MY_DEBUG_PRINT();
         /* Set RX last bits */
         pDataParams->wAdditionalInfo = (uint16_t)dwTemp;
 
@@ -1543,7 +1543,7 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
         {
             /* For QAC */
         }
-
+MY_DEBUG_PRINT();
 #ifndef PN5180_P2P_HW_SYNC_BYTE
         if ((pDataParams->bNfcipMode) == PH_ON && (wTmpBufferLen != 0U))
         {

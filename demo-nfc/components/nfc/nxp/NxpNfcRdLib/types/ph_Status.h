@@ -24,7 +24,14 @@
 
 #include <ph_TypeDefs.h>
 
-#define MY_DEBUG_PRINT(format, ...) printf("%s(%d): "format" \n", __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#if 0
+#define MY_DEBUG_PRINT(fmt, ...)    
+
+#define MY_DEBUG_PRINT2(format, ...)
+#else
+#define MY_DEBUG_PRINT(format, ...) esp_rom_printf("%s[%d]::%s: "format" \n", __FILENAME__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
+#define MY_DEBUG_PRINT2(format, ...) esp_rom_printf("%s[%d]::%s: "format" \n", __FILENAME__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
+#endif
 
 #ifndef NXPBUILD_DELETE
 #include <ph_NxpBuild.h>

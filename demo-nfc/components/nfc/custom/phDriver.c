@@ -36,6 +36,61 @@ phStatus_t phbalReg_GetConfig(void     *pDataParams,
     return PH_DRIVER_SUCCESS;
 }
 
+#if 0
+static void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len){}
+#else
+static void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len)
+{
+    esp_rom_printf("%s(%d):\n", prefix, len);
+    uint32_t i = 0;
+    uint32_t consecCnt = 0;
+    uint8_t current = data[0];
+    bool showDots = false;
+    esp_rom_printf("%02x ", current);
+
+    i = 1;
+    while (i < len)
+    {
+        if (current == data[i])
+        {
+            consecCnt++;
+            if (consecCnt >= 10)
+            {
+                if (!showDots)
+                {
+                    showDots = true;
+                    esp_rom_printf("... ");
+                }
+                else
+                {
+                    if (i == len - 1)
+                    {
+                        esp_rom_printf("%02x ", data[i]);
+                    }
+                }
+            }
+            else
+            {
+                esp_rom_printf("%02x ", data[i]);
+            }
+        }
+        else
+        {
+            current = data[i];
+            consecCnt = 0;
+            showDots = false;
+            esp_rom_printf("%02x ", data[i]);
+        }
+
+        if (i % 8 == 0)
+            esp_rom_printf("\n");
+
+        i++;
+    }
+    esp_rom_printf("\n");
+}
+#endif
+
 phStatus_t phbalReg_Exchange(void     *pDataParams,
                              uint16_t  wOption,
                              uint8_t  *pTxBuffer,
@@ -50,7 +105,7 @@ phStatus_t phbalReg_Exchange(void     *pDataParams,
     if(wTxLength && pTxBuffer != NULL) {
         ESP_LOGD(TAG, "Write data:");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, pTxBuffer, wTxLength, ESP_LOG_DEBUG);
-        // ESP_LOG_BUFFER_HEXDUMP("NFC>>", pTxBuffer, wTxLength, ESP_LOG_INFO);
+        PCD_HelpShowByte(">>", pTxBuffer, wTxLength);
 
         // Do the write transaction.
         ESP_ERROR_CHECK( dal_spi_transact(g_spi_dev,
@@ -73,7 +128,7 @@ phStatus_t phbalReg_Exchange(void     *pDataParams,
 
         ESP_LOGD(TAG, "Read data:\n");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, pRxBuffer, wTxLength, ESP_LOG_DEBUG);
-        // ESP_LOG_BUFFER_HEXDUMP("NFC--", pRxBuffer, wTxLength, ESP_LOG_INFO);
+        PCD_HelpShowByte("--", pRxBuffer, wTxLength);
         *pRxLength = len;
     }
 

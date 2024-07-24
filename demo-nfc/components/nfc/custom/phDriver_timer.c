@@ -20,9 +20,11 @@ static void timer_expiry_cb(TimerHandle_t xTimer) {
     pphDriver_TimerCallBck_t cb = (pphDriver_TimerCallBck_t)pvTimerGetTimerID(xTimer);
     if(cb)
     {
-        // MY_DEBUG_PRINT("timer cb()\n");
         cb();
     }
+
+    xTimerDelete(g_timer, 0);
+    g_timer = NULL;
 }
 
 phStatus_t phDriver_TimerStart(phDriver_Timer_Unit_t eTimerUnit, uint32_t dwTimePeriod, pphDriver_TimerCallBck_t pTimerCallback) {

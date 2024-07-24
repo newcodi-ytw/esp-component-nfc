@@ -160,7 +160,7 @@ phStatus_t phpalI14443p3a_Sw_HaltA(
     uint8_t     PH_MEMLOC_REM cmd[2];
     uint8_t *   PH_MEMLOC_REM pResp = NULL;
     uint16_t    PH_MEMLOC_REM wRespLength = 0;
-
+MY_DEBUG_PRINT();
     /* Set halt timeout */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
@@ -737,47 +737,62 @@ phStatus_t phpalI14443p3a_Sw_RequestAEx(
     uint16_t    PH_MEMLOC_REM wRespLength = 0;
     uint16_t    PH_MEMLOC_REM wRegister;
 
+    MY_DEBUG_PRINT();
     /* Disable MIFARE Classic contactless IC Crypto1 */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
         PHHAL_HW_CONFIG_DISABLE_MF_CRYPTO1,
         PH_ON));
 
+    MY_DEBUG_PRINT();
     /* Reset default data rates */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
         PHHAL_HW_CONFIG_TXDATARATE_FRAMING,
         PHHAL_HW_RF_DATARATE_106));
+
+    MY_DEBUG_PRINT();
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
         PHHAL_HW_CONFIG_RXDATARATE_FRAMING,
         PHHAL_HW_RF_DATARATE_106));
 
+    MY_DEBUG_PRINT();
     /* Set selection timeout */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
         PHHAL_HW_CONFIG_TIMEOUT_VALUE_US,
         PHPAL_I14443P3A_SELECTION_TIME_US + PHPAL_I14443P3A_EXT_TIME_US));
-
+    
+    MY_DEBUG_PRINT();
     /* Retrieve RxWaitTime */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_GetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXWAIT_US, &wRegister));
+    
+    MY_DEBUG_PRINT();
     /* Set RxWaitTime to 76 microseconds equivalent to 8 Bits. */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXWAIT_US, 76));
 
+    MY_DEBUG_PRINT();
     /* Switch off CRC */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_TXCRC, PH_OFF));
+
+    MY_DEBUG_PRINT();
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXCRC, PH_OFF));
 
+    MY_DEBUG_PRINT();
     /* Only 7 bits are valid */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_TXLASTBITS, 7));
-
+    
+    MY_DEBUG_PRINT("bReqCode:%d",bReqCode);
     /* Send ReqA command */
     cmd[0] = bReqCode;
     statusTmp = phhalHw_Exchange(pDataParams->pHalDataParams, PH_EXCHANGE_DEFAULT, cmd, 1, &pResp, &wRespLength);
-
+    
+    MY_DEBUG_PRINT();
     /* Restore previous RxWaitTime */
     PH_CHECK_SUCCESS_FCT(Status, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXWAIT_US, wRegister));
-
+    
+    MY_DEBUG_PRINT();
     PH_CHECK_SUCCESS(statusTmp);
     /* Check and copy ATQA */
     if (wRespLength == PHPAL_I14443P3A_ATQA_LENGTH)

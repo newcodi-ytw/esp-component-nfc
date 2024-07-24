@@ -22,10 +22,10 @@ esp_err_t init_spi(spi_device_handle_t *dev) {
     };
 
     spi_device_interface_config_t dev_cfg = {
-        .clock_speed_hz = 1000*1000,
+        .clock_speed_hz = 4000000,
         .mode = 0,
         .spics_io_num = PIN_SSEL,
-        .queue_size = 10,
+        .queue_size = 4,
         .pre_cb = NULL,
     };
 

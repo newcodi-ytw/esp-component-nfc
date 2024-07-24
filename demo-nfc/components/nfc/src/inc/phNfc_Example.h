@@ -3,6 +3,8 @@
 
 #include <ph_Status.h>
 
+#define LISTEN_PHASE_TIME_MS              1000       /* Listen Phase TIME */
+
 /* Enables configuring of Discovery loop */
 #define ENABLE_DISC_CONFIG
 

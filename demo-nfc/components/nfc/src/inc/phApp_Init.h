@@ -143,7 +143,7 @@ extern phhalHw_Pn76xx_DataParams_t   * pHal;
 
 /**************************************************Prints if error is detected**************************************************************/
 /* Enable(1) / Disable(0) printing error/info */
-#define DETECT_ERROR 0
+#define DETECT_ERROR 1
 
 #if DETECT_ERROR
     #define DEBUG_ERROR_PRINT(x) x
@@ -156,14 +156,14 @@ extern phhalHw_Pn76xx_DataParams_t   * pHal;
 #define CHECK_STATUS(x)                                      \
     if ((x) != PH_ERR_SUCCESS)                               \
 {                                                            \
-    DEBUG_PRINTF("Line: %d   Error - (0x%04X) has occurred : 0xCCEE CC-Component ID, EE-Error code. Refer-ph_Status.h\n", __LINE__, (x));    \
+    esp_rom_printf("Line: %d   Error - (0x%04X) has occurred : 0xCCEE CC-Component ID, EE-Error code. Refer-ph_Status.h\n", __LINE__, (x));    \
 }
 
 /* prints if error is detected */
 #define CHECK_SUCCESS(x)              \
     if ((x) != PH_ERR_SUCCESS)        \
 {                                     \
-    DEBUG_PRINTF("\nLine: %d   Error - (0x%04X) has occurred : 0xCCEE CC-Component ID, EE-Error code. Refer-ph_Status.h\n ", __LINE__, (x)); \
+    esp_rom_printf("\nLine: %d   Error - (0x%04X) has occurred : 0xCCEE CC-Component ID, EE-Error code. Refer-ph_Status.h\n ", __LINE__, (x)); \
     return (x);                       \
 }
 
@@ -171,7 +171,7 @@ extern phhalHw_Pn76xx_DataParams_t   * pHal;
 #define CHECK_NFCLIB_STATUS(x)                               \
     if ((x) != PH_NFCLIB_STATUS_SUCCESS)                     \
 {                                                            \
-    DEBUG_PRINTF("\nLine: %d   Error - (0x%04X) has occurred in NFCLIB\n ", __LINE__, (x)); \
+    esp_rom_printf("\nLine: %d   Error - (0x%04X) has occurred in NFCLIB\n ", __LINE__, (x)); \
 }
 
 /*********************************************************************************************************************************************/

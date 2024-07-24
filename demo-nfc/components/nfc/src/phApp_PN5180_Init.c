@@ -160,7 +160,12 @@ phStatus_t phApp_ConfigureLPCD(void)
 
 void CLIF_IRQHandler(void)
 {
+    // MY_DEBUG_PRINT("delay:1500 : %d", phOsal_ThreadDelay(150));
     /* Read the interrupt status of external interrupt attached to the reader IC IRQ pin */
+    extern void phhalHw_Pn5180_CustomPostCb(void);
+    phDriver_TimerStart(PH_DRIVER_TIMER_MILLI_SECS, 1,
+                phhalHw_Pn5180_CustomPostCb);
+
     if (phDriver_PinRead(PHDRIVER_PIN_IRQ, PH_DRIVER_PINFUNC_INTERRUPT))
     {
         phDriver_PinClearIntStatus(PHDRIVER_PIN_IRQ);
@@ -168,6 +173,7 @@ void CLIF_IRQHandler(void)
         /* Call application registered callback. */
         if (pHal->pRFISRCallback != NULL)
         {
+            MY_DEBUG_PRINT();
             pHal->pRFISRCallback(pHal);
         }
     }

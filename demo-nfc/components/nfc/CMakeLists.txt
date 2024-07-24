@@ -13,6 +13,7 @@ set(compile_flags
 
     "-Wno-error=implicit-function-declaration"
     "-Wno-error=memset-elt-size"
+    "-Wno-error=maybe-uninitialized"
 )
 
 set(nfc_lib 
@@ -25,7 +26,8 @@ set(nfc_lib
     "src/phApp_PN5180_Init.c"
     "src/phApp_Init.c"
     "src/phNfc_Example.c"
-
+    "src/phApp_Helper.c"
+    
     "nxp/RTOS/phOsal/src/Freertos/phOsal_Freertos.c"
 
     "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_Initialization.c"

@@ -50,6 +50,8 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
     uint32_t   PH_MEMLOC_REM dwRegister;
     phOsal_EventBits_t PH_MEMLOC_REM tReceivedEvents;
 
+    // MY_DEBUG_PRINT("delay:1500 : %d", phOsal_ThreadDelay(150));
+
     /* Parameter check */
     if (0U == (dwIrqWaitFor))
     {
@@ -64,6 +66,7 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
      * instead poll on IRQ Status register. */
     if ( pDataParams->bIsTestBusEnabled == PH_ON)
     {
+        MY_DEBUG_PRINT("Test Bus is enabled ");
         /* Test Bus is enabled */
         bEnableIrq &= (uint8_t)~(uint8_t)PHHAL_HW_CHECK_IRQ_PIN_MASK;
     }
@@ -74,24 +77,29 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
         /*wait for IRQ pin event or Abort event*/
 
         {
+            MY_DEBUG_PRINT("phOsal_EventPend: 0x%x", (E_PH_OSAL_EVT_RF | E_PH_OSAL_EVT_ABORT));
             statusTmp = phOsal_EventPend((volatile phOsal_Event_t * )(&pDataParams->HwEventObj.EventHandle), E_OS_EVENT_OPT_PEND_SET_ANY, PHOSAL_MAX_DELAY,
                 (E_PH_OSAL_EVT_RF | E_PH_OSAL_EVT_ABORT), &tReceivedEvents);
         }
 
+        MY_DEBUG_PRINT();
         /*Handle abort event*/
         if ((E_PH_OSAL_EVT_ABORT & tReceivedEvents) || (statusTmp != PH_ERR_SUCCESS))
         {
-
+            MY_DEBUG_PRINT();
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Int_IdleCommand(pDataParams));
 
+            MY_DEBUG_PRINT();
             /* Disable IRQ sources */
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegisterAndMask(pDataParams, IRQ_ENABLE, (uint32_t)~dwIrqWaitFor));
 
+            MY_DEBUG_PRINT();
             (void)phOsal_EventClear(&pDataParams->HwEventObj.EventHandle, E_OS_EVENT_OPT_NONE, E_PH_OSAL_EVT_ABORT, NULL);
             return PH_ADD_COMPCODE_FIXED(PH_ERR_ABORTED, PH_COMP_HAL);
         }
         else
         {
+            MY_DEBUG_PRINT();
             /* Read the IRQ register and check if the interrupt has occured */
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_ReadRegister(pDataParams, IRQ_STATUS, &dwRegister));
 
@@ -100,9 +108,11 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
 
             if ((bEnableIrq & PHHAL_HW_DISABLE_IRQ_CLEAR_MASK) == PH_OFF)
             {
+                MY_DEBUG_PRINT();
                 /* Clear all Interrupts for e.g Tx interrupt during receive */
                 PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegister(pDataParams, IRQ_SET_CLEAR, dwRegister));
             }
+            MY_DEBUG_PRINT();
             /* Disable IRQ sources */
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegisterAndMask(pDataParams, IRQ_ENABLE, (uint32_t)~dwIrqWaitFor));
 
@@ -145,6 +155,8 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegister(pDataParams, IRQ_SET_CLEAR, dwRegister));
         }
     }
+
+    MY_DEBUG_PRINT();
 
     return PH_ERR_SUCCESS;
 

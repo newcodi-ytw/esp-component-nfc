@@ -8,10 +8,8 @@
 
 #include "BoardSelection.h"
 
+#include "ph_Status.h"
 #include "phDriver.h"
-
-// #undef portYIELD_FROM_ISR
-// #define portYIELD_FROM_ISR(...)        {traceISR_EXIT_TO_SCHEDULER(); _frxt_setup_switch();}
 
 extern void CLIF_IRQHandler();
 
@@ -42,28 +40,38 @@ static const gpio_int_type_t intr_map[] = {
 
 static EventGroupHandle_t isr_events = NULL;
 
+static bool debugOnOff = 0;
+void phDriver_GpioDebugToggle(void)
+{
+    debugOnOff = !debugOnOff;
+
+    gpio_set_level(PIN_GPO1_GREEN, debugOnOff);
+}
+
+void phDriver_GpioSendFakeISR(void)
+{
+    phDriver_GpioDebugToggle();
+
+    EventBits_t mask = (1 << (PIN_IRQ & 0x1f));
+    if(isr_events) xEventGroupSetBits(isr_events, mask);
+    
+    MY_DEBUG_PRINT("set by uart: %d\n", mask);
+}
+
 static void gpio_isr(void *param) {
     EventBits_t mask = (EventBits_t)param;
     BaseType_t do_switch = pdFALSE;
     BaseType_t xResult = pdFALSE;
 
-    // EventBits_t test = (1 << (PHDRIVER_PIN_IRQ & 0x1f));
-    // uint8_t result = (test & mask) ? 1 : 0;
-    // gpio_set_level(PIN_GPO1_GREEN, result);
-    // gpio_set_level(PIN_GPO1_RED, !result);
-
-    xResult = xEventGroupSetBitsFromISR(isr_events, mask, &do_switch);
+    MY_DEBUG_PRINT("isr:: mask:%d", mask);
+    xResult = xEventGroupSetBitsFromISR(isr_events, mask, &do_switch);   
 
     CLIF_IRQHandler();
 
     if(xResult == pdPASS) 
     {
+        // portYIELD_FROM_ISR();
         portYIELD_FROM_ISR(do_switch);
-    }
-    else
-    {
-        // gpio_set_level(PIN_GPO1_GREEN, 0);
-        // gpio_set_level(PIN_GPO1_BLUE, 1);
     }
 }
 
@@ -120,7 +128,7 @@ phStatus_t phDriver_PinConfig(uint32_t               dwPinNumber,
     if(err != ESP_OK) return PH_DRIVER_ERROR;
 
     // if(intr == GPIO_INTR_DISABLE) return PH_DRIVER_SUCCESS;
-    err = gpio_set_intr_type(dwPinNumber, intr);
+    // err = gpio_set_intr_type(dwPinNumber, intr);
 
     // Set the interrupt handler.
     EventBits_t mask = (1 << (dwPinNumber & 0x1f));
@@ -132,19 +140,19 @@ phStatus_t phDriver_PinConfig(uint32_t               dwPinNumber,
 uint8_t phDriver_PinRead(uint32_t            dwPinNumber,
                          phDriver_Pin_Func_t ePinFunc) {
     // Is it an interrupt pin? I guess we need to get the interrupt status.
+    
     if(ePinFunc == PH_DRIVER_PINFUNC_INTERRUPT) {
+        MY_DEBUG_PRINT("%d: %d", dwPinNumber, ePinFunc);
         EventBits_t mask = (1 << (dwPinNumber & 0x1f));
 
         EventBits_t retBit = 0;
         uint8_t ret = 0;
-        if (xPortInIsrContext())
+        // if (xPortIsInsideInterrupt())
+        if(0)
         {
             retBit = xEventGroupGetBitsFromISR(isr_events);
             ret = (retBit & mask) ? 1 : 0;
-
-            gpio_set_level(PIN_GPO1_GREEN, ret);
-            gpio_set_level(PIN_GPO1_RED, !ret);
-
+            MY_DEBUG_PRINT("isr::ret: %d retBit:%d mask:%d", ret, retBit, mask);
             // portYIELD_FROM_ISR();
 
             return ret;
@@ -152,6 +160,7 @@ uint8_t phDriver_PinRead(uint32_t            dwPinNumber,
         else
         {
             retBit = xEventGroupGetBits(isr_events);
+            MY_DEBUG_PRINT("ret: %d retBit:%d mask:%d", ret, retBit, mask);
             ret = (retBit & mask) ? 1 : 0;
             return ret;
         }
@@ -171,7 +180,7 @@ void phDriver_PinClearIntStatus(uint32_t dwPinNumber) {
     EventBits_t mask = (1 << (dwPinNumber & 0x1f));
     // gpio_set_level(PIN_GPO1_GREEN, 1);
 
-    if(xPortInIsrContext()) {
+    if(xPortIsInsideInterrupt()) {
         xEventGroupClearBitsFromISR(isr_events, mask);
         // portYIELD_FROM_ISR();
     } else {

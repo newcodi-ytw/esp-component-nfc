@@ -285,10 +285,10 @@ phStatus_t phacDiscLoop_Sw_Int_ActivePollMode(
 
     /* Reset detected technologies */
     pDataParams->bDetectedTechs = 0x00;
-
     /* Loop through all the supported active technologies */
     for (bIndex = 0; bIndex < PHAC_DISCLOOP_ACT_POLL_MAX_TECHS_SUPPORTED; bIndex++)
     {
+        MY_DEBUG_PRINT("bIndex:%d",bIndex);
         switch(pDataParams->bActPollTechCfg & (PH_ON << bIndex))
         {
             case PHAC_DISCLOOP_ACT_POS_BIT_MASK_106:
@@ -433,10 +433,10 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
     status = PH_ERR_INVALID_PARAMETER;
 
     if(pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_DETECTION)
-    {
+    {MY_DEBUG_PRINT();
         if((pDataParams->bOpeMode == RD_LIB_MODE_NFC) ||
            (pDataParams->bOpeMode == RD_LIB_MODE_ISO))
-        {
+        {MY_DEBUG_PRINT();
             /* Perform Technology detection Activity */
             status = phacDiscLoop_Sw_Int_TechDetectActivity(
                 pDataParams,
@@ -447,7 +447,7 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
             PH_CHECK_ABORT(status);
         }
         else if(pDataParams->bOpeMode == RD_LIB_MODE_EMVCO)
-        {
+        {MY_DEBUG_PRINT();
             /* Perform Technology detection Activity */
             status = phacDiscLoop_Sw_Int_EmvcoTechDetectActivity(
                 pDataParams,
@@ -460,17 +460,17 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
         {
             ;/* Do Nothing */
         }
-
+MY_DEBUG_PRINT();
         if ((0U != (pDataParams->bLpcdEnabled)) &&
            (0U != (pDataParams->bPasPollTechCfg)) &&
            ((status & PH_ERR_MASK) == PHAC_DISCLOOP_NO_TECH_DETECTED))
-        {
+        {MY_DEBUG_PRINT();
             /* LPCD is success but card presence does not exist/errors */
             return PH_ADD_COMPCODE_FIXED(PHAC_DISCLOOP_LPCD_NO_TECH_DETECTED, PH_COMP_AC_DISCLOOP);
         }
 
         if((status & PH_ERR_MASK) == PHAC_DISCLOOP_TECH_DETECTED)
-        {
+        {MY_DEBUG_PRINT();
             pDataParams->bPollState = PHAC_DISCLOOP_POLL_STATE_COLLISION_RESOLUTION;
         }
     }
@@ -481,9 +481,9 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
         /* Get Technology to be resolved */
         bResolveTech = pDataParams->bDetectedTechs & pDataParams->bPasPollTechCfg;
         if(0U != (bResolveTech))
-        {
+        {MY_DEBUG_PRINT();
             if(0U != (bResolveTech & (uint8_t)(bResolveTech - 1U)))
-            {
+            {MY_DEBUG_PRINT();
                 return PH_ADD_COMPCODE_FIXED(PH_ERR_INVALID_PARAMETER, PH_COMP_AC_DISCLOOP);
             }
         }
@@ -493,10 +493,10 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
         }
 
         PHAC_DISCLOOP_GET_BIT_POS(bResolveTech, bTechType);
-
+MY_DEBUG_PRINT();
         status = phacDiscLoop_Sw_Int_ColsnReslnActivity(pDataParams, (bTechType -  (uint8_t)1U));
         if((status & PH_ERR_MASK) == PHAC_DISCLOOP_DEVICE_RESOLVED)
-        {
+        {MY_DEBUG_PRINT();
                 /* Activation */
                 status = phacDiscLoop_Sw_Int_ActivateDevice(pDataParams, (bTechType - (uint8_t)1U), (uint8_t)0x00U);
         }
@@ -504,9 +504,9 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
         PH_CHECK_ABORT(status);
     }
     if(pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_REMOVAL)
-    {
+    {MY_DEBUG_PRINT();
         if(pDataParams->bOpeMode == RD_LIB_MODE_EMVCO)
-        {
+        {MY_DEBUG_PRINT();
             status = phacDiscLoop_Sw_Int_EmvcoRemovalProcedure(pDataParams);
         }
     }
@@ -636,18 +636,18 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
 
     pDataParams->bDetectedTechs = 0x00;
     pDataParams->bNumOfCards = 0x00;
-
+MY_DEBUG_PRINT();
     /* Apply Proprietary Technology Guard Time(PTGT) if Proprietary Technology Poll enabled */
     status = phacDiscLoop_Sw_Int_Apply_PTGT(pDataParams);
     PH_CHECK_SUCCESS(status);
-
+MY_DEBUG_PRINT();
     /* Poll for requested NFC-Tech Type presence. */
     for (bTechLoopIndex = 0; bTechLoopIndex < PHAC_DISCLOOP_PASS_POLL_MAX_TECHS_SUPPORTED; bTechLoopIndex++)
-    {
+    {MY_DEBUG_PRINT("%d", bTechLoopIndex);
         /* In NFC mode, poll proprietary technologies only if NFC technologies are not detected */
         if((pDataParams->bOpeMode == RD_LIB_MODE_NFC) && (0U != bNumOfTechsFound)
            && (bTechLoopIndex == PHAC_DISCLOOP_POLL_MAX_NFC_TECHS_SUPPORTED))
-        {
+        {MY_DEBUG_PRINT();
             break;
         }
 
@@ -655,12 +655,12 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
 
         if (((bTechIndex == PHAC_DISCLOOP_TECH_TYPE_F212) || (bTechIndex == PHAC_DISCLOOP_TECH_TYPE_F424))
             && (bTechTypeF_Detected == PH_ON))
-        {
+        {MY_DEBUG_PRINT();
             continue;
         }
 
         if (0U != (bDetectConfig & (PH_ON << bTechIndex)))
-        {
+        {MY_DEBUG_PRINT();
             /* Get Config to check the internal Field On. */
             status = phhalHw_GetConfig(
                 pDataParams->pHalDataParams,
@@ -669,10 +669,10 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
             PH_CHECK_SUCCESS(status);
 
             if (wIntFieldStatus == PH_ON)
-            {
+            {MY_DEBUG_PRINT();
                 if (((uint8_t)PHAC_DISCLOOP_TECH_TYPE_F212 == bTechIndex) ||
                     ((uint8_t)PHAC_DISCLOOP_TECH_TYPE_F424 ==  bTechIndex))
-                {
+                {MY_DEBUG_PRINT();
 #ifdef NXPBUILD__PHAC_DISCLOOP_TYPEF_TAGS
                     PH_CHECK_SUCCESS_FCT(status, phacDiscLoop_Sw_Int_Config_GTF(pDataParams, bTechIndex));
 #endif /* NXPBUILD__PHAC_DISCLOOP_TYPEF_TAGS */
@@ -684,16 +684,17 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
                         pDataParams->waPasPollGTimeUs[bTechIndex]));
                 }
             }
-
+MY_DEBUG_PRINT();
             /* Apply Protocol Setting for Selected Tech  */
             PH_CHECK_SUCCESS_FCT(status, phhalHw_ApplyProtocolSettings(pDataParams->pHalDataParams,
                 (uint8_t)(gPasTechTypeMapTable[bTechIndex] & 0xFFU)));
 
             /* Perform I-RFCA and Switch on RF Field after Apply protocol settings, if in NFC and ISO mode. */
+            MY_DEBUG_PRINT();
             PH_CHECK_SUCCESS_FCT(status, phacDiscLoop_Sw_Int_FieldOn(pDataParams));
-
+MY_DEBUG_PRINT();
             if (wIntFieldStatus == PH_OFF)
-            {
+            {MY_DEBUG_PRINT();
                 if (((uint8_t) PHAC_DISCLOOP_TECH_TYPE_F212 ==  bTechIndex) ||
                     ((uint8_t) PHAC_DISCLOOP_TECH_TYPE_F424 ==  bTechIndex))
                 {
@@ -708,44 +709,44 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
                         pDataParams->waPasPollGTimeUs[bTechIndex]));
                 }
             }
-
+MY_DEBUG_PRINT();
             /* Perform Tech detection. */
             status = pfDetTechs[bTechIndex](pDataParams);
-
+MY_DEBUG_PRINT();
             if ((status & PH_ERR_MASK) == PHAC_DISCLOOP_TECH_DETECTED)
-            {
+            {MY_DEBUG_PRINT();
                 /*Set the corresponding detected bit. */
                 pDataParams->bDetectedTechs |= PH_ON << bTechIndex;
                 bNumOfTechsFound++;
                 /* Since Device detected at 212 Baud, Skip polling at 424 */
                 if((0U != ((pDataParams->bDetectedTechs & PHAC_DISCLOOP_POS_BIT_MASK_F212)))
                         || (0U != ((pDataParams->bDetectedTechs & PHAC_DISCLOOP_POS_BIT_MASK_F424))))
-                {
+                {MY_DEBUG_PRINT();
                     *pNumOfTechsDetect = bNumOfTechsFound;
                     bTechTypeF_Detected = PH_ON;
                 }
             }
             else
-            {
+            {MY_DEBUG_PRINT();
                 PH_CHECK_ABORT(status);
             }
 
             if((0U != (bPasPollBailOut & (PH_ON << bTechIndex))) && (0U != bNumOfTechsFound))
-            {
+            {MY_DEBUG_PRINT();
                 /* Bailout set, Returning to application */
                 *pNumOfTechsDetect = bNumOfTechsFound;
                 break;
             }
         }
     }
-
+MY_DEBUG_PRINT();
     if (bNumOfTechsFound == 1U)
-    {
+    {MY_DEBUG_PRINT();
         *pNumOfTechsDetect = bNumOfTechsFound;
         return PH_ADD_COMPCODE_FIXED(PHAC_DISCLOOP_TECH_DETECTED, PH_COMP_AC_DISCLOOP);
     }
     else if(bNumOfTechsFound > 1U)
-    {
+    {MY_DEBUG_PRINT();
         *pNumOfTechsDetect = bNumOfTechsFound;
         return PH_ADD_COMPCODE_FIXED(PHAC_DISCLOOP_MULTI_TECH_DETECTED, PH_COMP_AC_DISCLOOP);
     }
@@ -754,7 +755,7 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
         return PH_ADD_COMPCODE_FIXED(PHAC_DISCLOOP_NO_TECH_DETECTED, PH_COMP_AC_DISCLOOP);
     }
     else
-    {
+    {MY_DEBUG_PRINT();
         return status; /* Other Failure */
     }
 }

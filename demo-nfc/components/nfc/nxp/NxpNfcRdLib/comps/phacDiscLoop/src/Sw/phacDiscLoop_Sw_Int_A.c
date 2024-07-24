@@ -67,21 +67,21 @@ phStatus_t phacDiscLoop_Sw_DetTechTypeA(
         pDataParams->sTypeATargetInfo.aTypeA_I3P3[bIndex].bSleep = 0U;
         pDataParams->sTypeATargetInfo.aTypeA_I3P3[bIndex].bUidSize = 0U;
     }
-
+MY_DEBUG_PRINT();
     /* sending the WakeUpA */
     wStatus = phpalI14443p3a_WakeUpA(
         pDataParams->pPal1443p3aDataParams,
         pDataParams->sTypeATargetInfo.aTypeA_I3P3[0].aAtqa);
-
+MY_DEBUG_PRINT();
     if(0u != (phacDiscLoop_Sw_Int_IsValidPollStatus(wStatus)))
     {
         if((wStatus & PH_ERR_MASK) == PH_ERR_COLLISION_ERROR)
-        {
+        {MY_DEBUG_PRINT();
             pDataParams->bCollPend |= PHAC_DISCLOOP_POS_BIT_MASK_A;
         }
 
         PH_CHECK_SUCCESS_FCT(wStatus, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_TXWAIT_US, 500));
-
+MY_DEBUG_PRINT();
         /* Halt the detected cards. */
         PH_CHECK_ABORT_FCT(wStatus, phpalI14443p3a_HaltA(pDataParams->pPal1443p3aDataParams));
 
@@ -89,7 +89,7 @@ phStatus_t phacDiscLoop_Sw_DetTechTypeA(
 
     }
     else
-    {
+    {MY_DEBUG_PRINT();
         return wStatus;
     }
 

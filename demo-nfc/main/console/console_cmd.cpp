@@ -44,6 +44,22 @@ static void registerCustomCommands()
             gpio_set_level(pinNum, level);
             return 0; 
         }
+    );    
+    
+    const struct PN5180ConfigArgs {
+        PN5180ConfigArgs(): config(INT1, nullptr, nullptr, "<config>", "config register"), 
+                            value(INT1, nullptr, nullptr, "<value>", "config value"){}
+        CommandArgs config;
+        CommandArgs value;
+    } args_pn5180_register;
+    static const ConsoleCommand Cmd_SetN5180Config("config", "set config register", &args_pn5180_register, sizeof(args_pn5180_register),
+        [&](ConsoleCommand *c){
+            auto config = c->get_int_of(&PN5180ConfigArgs::config);
+            auto value = c->get_int_of(&PN5180ConfigArgs::value);
+
+            NFC_UpdateConfig(config, value);
+            return 0; 
+        }
     );
     
     static const ConsoleCommand Cmd_SoftRestart("restart", "reboot esp cmd", no_args,
@@ -89,6 +105,15 @@ static void registerCustomCommands()
         [&](ConsoleCommand *c){
             ESP_LOGI(TAG, "NFC starting ...");
             NFC_Run();
+
+            return 0; 
+        }
+    );
+
+    static const ConsoleCommand Cmd_NfcIrq("irq-nfc", "send irq to nfc", no_args,
+        [&](ConsoleCommand *c){
+            ESP_LOGI(TAG, "IRQ NFC ...");
+            NFC_SendISR();
 
             return 0; 
         }

@@ -19,6 +19,7 @@
 */
 
 #include <phOsal.h>
+#include <ph_Status.h>
 
 #ifdef PH_OSAL_FREERTOS
 #include <FreeRTOS.h>
@@ -267,12 +268,12 @@ phStatus_t phOsal_EventPend(volatile phOsal_Event_t * eventHandle, phOsal_EventO
     {
         return (PH_OSAL_ERROR | PH_COMP_OSAL);
     }
-
+MY_DEBUG_PRINT("***** : 0x%x", FlagsToWait);
     CurrentFlags = xEventGroupWaitBits(*eventHandle, FlagsToWait,
         (options & E_OS_EVENT_OPT_PEND_CLEAR_ON_EXIT) >> E_OS_EVENT_OPT_POS_PEND_CLEAR_ON_EXIT,
         (options & E_OS_EVENT_OPT_PEND_SET_ALL) >> E_OS_EVENT_OPT_POS_PEND_SET_ALL,
         ticksToWait);
-
+MY_DEBUG_PRINT("----- : 0x%x", FlagsToWait);
     if (pCurrFlags != NULL)
     {
         *pCurrFlags = CurrentFlags;
@@ -316,11 +317,13 @@ phStatus_t phOsal_EventPost(phOsal_Event_t * eventHandle, phOsal_EventOpt_t opti
         CurrentFlags = xEventGroupSetBitsFromISR(*eventHandle, FlagsToPost, &HigherPriorityTaskWoken);
         if(CurrentFlags == pdPASS)
         {
+            MY_DEBUG_PRINT("isr::%d", FlagsToPost);
             portYIELD_FROM_ISR(HigherPriorityTaskWoken);
         }
     }
     else
     {
+        MY_DEBUG_PRINT("%d", FlagsToPost);
         CurrentFlags = xEventGroupSetBits(*eventHandle, FlagsToPost);
     }
 
@@ -328,7 +331,6 @@ phStatus_t phOsal_EventPost(phOsal_Event_t * eventHandle, phOsal_EventOpt_t opti
     {
         *pCurrFlags = CurrentFlags;
     }
-
     return PH_OSAL_SUCCESS;
 }
 
