@@ -80,8 +80,8 @@ set(nfc_lib_inc
 
 
 #example source
-set(EXAMPLE_DISC_LOOP TRUE)
-set(EXAMPLE_SIMPLE_ISO FALSE)
+set(EXAMPLE_DISC_LOOP FALSE)
+set(EXAMPLE_SIMPLE_ISO TRUE)
 
 if(EXAMPLE_DISC_LOOP)
     message(WARNING "**** EXAMPLE_DISC_LOOP ****")
@@ -99,9 +99,47 @@ if(EXAMPLE_DISC_LOOP)
         "examples/discLoop/inc"
     )
 endif()
+
+if(EXAMPLE_SIMPLE_ISO)
+    message(WARNING "**** EXAMPLE_SIMPLE_ISO ****")
+    list(APPEND compile_flags 
+        "-DEXAMPLE_SIMPLE_ISO"
+    )
+    list(APPEND nfc_lib 
+        "examples/simplifiedAPI/Nfcrdlib_SimplifiedApi_ISO_MFC.c"
+        "examples/simplifiedAPI/Nfcrdlib_SimplifiedApi_ISO_18000.c"
+        "examples/simplifiedAPI/Nfcrdlib_SimplifiedApi_ISO_Layer4TypeA.c"
+        "examples/simplifiedAPI/Nfcrdlib_SimplifiedApi_ISO_TypeB.c"
+        "examples/simplifiedAPI/Nfcrdlib_SimplifiedApi_ISO_15693.c"
+        "examples/simplifiedAPI/Nfcrdlib_SimplifiedApi_ISO_MFUL.c"
+        "examples/simplifiedAPI/phApp_PN5180_Init.c"
+        "examples/simplifiedAPI/phApp_Init.c"
+        "examples/simplifiedAPI/phApp_Helper.c"
+
+        "examples/simplifiedAPI/Nfcrdlib_SimplifiedApi_ISO.c"
+
+        #nxp lib
+        "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib.c"
+        "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_Initialization.c"
+        "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_18000p3m3.c"
+        "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_MFC.c"
+        "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_15693.c"
+        "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_MFDF.c"
+        "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_Utility.c"
+        "nxp/NxpNfcRdLib/comps/phNfcLib/src/phNfcLib_MFUL.c"
+    )    
+    list(APPEND nfc_lib_inc
+        "examples/simplifiedAPI/inc"
+    )
+endif()
     
-#supported protocol - XXXX disable
+if(EXAMPLE_SIMPLE_ISO)
+set(NXPBUILD_CRYPTO_KEY TRUE)
+else()
 set(NXPBUILD_CRYPTO_KEY FALSE)
+endif()
+
+#supported protocol - XXXX disable
 set(NXPBUILD__PHHAL_HW_PN7640 FALSE)
 set(NXPBUILD__PHHAL_HW_PN76XX FALSE)
 

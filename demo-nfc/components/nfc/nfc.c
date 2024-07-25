@@ -4,6 +4,10 @@
 #include "phNfc_Example.h"
 #endif
 
+#ifdef EXAMPLE_SIMPLE_ISO
+#include "Nfcrdlib_SimplifiedApi_ISO.h"
+#endif
+
 #include "nfc.h"
 void NFC_Run(void)
 {
@@ -11,6 +15,10 @@ void NFC_Run(void)
     
 #ifdef EXAMPLE_DISC_LOOP
     phNfc_Example_Init();
+#endif  
+
+#ifdef EXAMPLE_SIMPLE_ISO
+    SimplifiedApiDemo_Main();
 #endif
 
 }
