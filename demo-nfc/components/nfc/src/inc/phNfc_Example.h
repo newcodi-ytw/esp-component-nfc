@@ -64,8 +64,8 @@ extern void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len);
 // #define ENABLE_DISC_CONFIG
 
 #ifdef PH_OSAL_FREERTOS
-    #define DISC_DEMO_TASK_STACK         (1024*2)
-    #define DISC_DEMO_TASK_PRIO          2
+    #define EXAMPLE_TASK_STACK         (1024*2)
+    #define EXAMPLE_TASK_PRIO          2
 #endif /* PH_OSAL_FREERTOS */
 
 void phNfc_Example_Init(void);

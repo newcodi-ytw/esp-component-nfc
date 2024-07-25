@@ -26,8 +26,6 @@ static phStatus_t LoadProfile(phacDiscLoop_Profile_t bProfile);
 
 void phNfc_Example_Init(void)
 {
-    phDriver_GpioDebugToggle();
-
     phStatus_t status = PH_ERR_INTERNAL_ERROR;
     phNfcLib_Status_t     dwStatus;
 #ifdef PH_PLATFORM_HAS_ICFRONTEND
@@ -77,8 +75,8 @@ void phNfc_Example_Init(void)
 
         DiscLoop.pTaskName = (uint8_t *)bTaskName;
         DiscLoop.pStackBuffer = NULL/* aDiscTaskBuffer */;
-        DiscLoop.priority = DISC_DEMO_TASK_PRIO;
-        DiscLoop.stackSizeInNum = DISC_DEMO_TASK_STACK;
+        DiscLoop.stackSizeInNum = EXAMPLE_TASK_STACK;
+        DiscLoop.priority = EXAMPLE_TASK_PRIO;
         phOsal_ThreadCreate(&DiscLoop.ThreadHandle, &DiscLoop, &phNfc_Example_Main, pDiscLoop);
 
         // phOsal_StartScheduler();

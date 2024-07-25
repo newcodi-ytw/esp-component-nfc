@@ -39,25 +39,6 @@ static const gpio_int_type_t intr_map[] = {
 };
 
 static EventGroupHandle_t isr_events = NULL;
-
-static bool debugOnOff = 0;
-void phDriver_GpioDebugToggle(void)
-{
-    debugOnOff = !debugOnOff;
-
-    gpio_set_level(PIN_GPO1_GREEN, debugOnOff);
-}
-
-void phDriver_GpioSendFakeISR(void)
-{
-    phDriver_GpioDebugToggle();
-
-    EventBits_t mask = (1 << (PIN_IRQ & 0x1f));
-    if(isr_events) xEventGroupSetBits(isr_events, mask);
-    
-    DEBUG_LOG_HW("set by uart: %d\n", mask);
-}
-
 void IRAM_ATTR gpio_isr(void *param) {
     EventBits_t mask = (EventBits_t)param;
     BaseType_t do_switch = pdFALSE;

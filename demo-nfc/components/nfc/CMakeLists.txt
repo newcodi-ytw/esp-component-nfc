@@ -2,7 +2,6 @@ set(compile_flags
     "-DxPortIsInsideInterrupt=xPortInIsrContext"
     "-isystem"
     "${IDF_PATH}/components/freertos/include/freertos"
-    # "${IDF_PATH}/components/freertos/port/xtensa/include/freertos"
 
     "-DNXPBUILD__PHHAL_HW_PN5180"
     "-DPHDRIVER_PN5180_CUSTOM_DEV_BOARD"
@@ -26,7 +25,6 @@ set(nfc_lib
 
     "src/phApp_PN5180_Init.c"
     "src/phApp_Init.c"
-    "src/phNfc_Example.c"
     "src/phApp_Helper.c"
     
     "nxp/RTOS/phOsal/src/Freertos/phOsal_Freertos.c"
@@ -67,6 +65,39 @@ set(nfc_lib
     "nxp/NxpNfcRdLib/comps/phTools/src/phTools.c"
     "nxp/NxpNfcRdLib/comps/phTools/src/phTools_Q.c"
 )
+
+set(nfc_lib_inc
+    "custom/include"
+
+    "src/inc"
+
+    "nxp/NxpNfcRdLib/types"
+    "nxp/NxpNfcRdLib/intfs"
+    "nxp/NxpNfcRdLib/comps"
+    
+    "nxp/RTOS/phOsal/inc"
+    "nxp/RTOS/phOsal/src/Freertos"
+
+    "nxp/Platform/DAL/inc"
+
+    "${IDF_PATH}/components/freertos/port/xtensa/include/freertos"
+    "${IDF_PATH}/components/freertos/include/freertos"
+)
+
+
+#example source
+set(EXAMPLE_DISC_LOOP TRUE)
+set(EXAMPLE_SIMPLE_ISO FALSE)
+
+if(EXAMPLE_DISC_LOOP)
+    message(WARNING "**** EXAMPLE_DISC_LOOP ****")
+    list(APPEND compile_flags 
+        "-DEXAMPLE_DISC_LOOP"
+    )
+    list(APPEND nfc_lib 
+        "src/phNfc_Example.c"
+    )
+endif()
     
 #supported protocol - XXXX disable
 set(NXPBUILD_CRYPTO_KEY FALSE)
@@ -226,24 +257,6 @@ if(NOT NXPBUILD__PHHAL_HW_PN76XX)
         "nxp/NxpNfcRdLib/comps/phpalI18092mPI/src/phpalI18092mPI.c"
     )
 endif()
-
-set(nfc_lib_inc
-    "custom/include"
-
-    "src/inc"
-
-    "nxp/NxpNfcRdLib/types"
-    "nxp/NxpNfcRdLib/intfs"
-    "nxp/NxpNfcRdLib/comps"
-    
-    "nxp/RTOS/phOsal/inc"
-    "nxp/RTOS/phOsal/src/Freertos"
-
-    "nxp/Platform/DAL/inc"
-
-    "${IDF_PATH}/components/freertos/port/xtensa/include/freertos"
-    "${IDF_PATH}/components/freertos/include/freertos"
-)
 
 
 set(main_lib "nfc.c")
