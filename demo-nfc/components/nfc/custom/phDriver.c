@@ -37,11 +37,13 @@ phStatus_t phbalReg_GetConfig(void     *pDataParams,
 }
 
 #if 0
-static void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len){}
+void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len){}
 #else
-static void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len)
+void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len)
 {
     esp_rom_printf("%s(%d):\n", prefix, len);
+    if (len == 0) return;
+
     uint32_t i = 0;
     uint32_t consecCnt = 0;
     uint8_t current = data[0];
@@ -51,6 +53,11 @@ static void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len)
     i = 1;
     while (i < len)
     {
+        if(i > 100) {
+            esp_rom_printf("Too long .... (size= %d)", len);
+            break;
+        }
+
         if (current == data[i])
         {
             consecCnt++;
@@ -105,7 +112,7 @@ phStatus_t phbalReg_Exchange(void     *pDataParams,
     if(wTxLength && pTxBuffer != NULL) {
         ESP_LOGD(TAG, "Write data:");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, pTxBuffer, wTxLength, ESP_LOG_DEBUG);
-        PCD_HelpShowByte(">>", pTxBuffer, wTxLength);
+        // PCD_HelpShowByte(">>", pTxBuffer, wTxLength);
 
         // Do the write transaction.
         ESP_ERROR_CHECK( dal_spi_transact(g_spi_dev,
@@ -128,7 +135,7 @@ phStatus_t phbalReg_Exchange(void     *pDataParams,
 
         ESP_LOGD(TAG, "Read data:\n");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, pRxBuffer, wTxLength, ESP_LOG_DEBUG);
-        PCD_HelpShowByte("--", pRxBuffer, wTxLength);
+        // PCD_HelpShowByte("--", pRxBuffer, wTxLength);
         *pRxLength = len;
     }
 

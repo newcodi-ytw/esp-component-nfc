@@ -77,12 +77,12 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
         /*wait for IRQ pin event or Abort event*/
 
         {
-            MY_DEBUG_PRINT("phOsal_EventPend: 0x%x", (E_PH_OSAL_EVT_RF | E_PH_OSAL_EVT_ABORT));
+            MY_DEBUG_PRINT("phOsal_EventPend: 0x%x s", (E_PH_OSAL_EVT_RF | E_PH_OSAL_EVT_ABORT));
             statusTmp = phOsal_EventPend((volatile phOsal_Event_t * )(&pDataParams->HwEventObj.EventHandle), E_OS_EVENT_OPT_PEND_SET_ANY, PHOSAL_MAX_DELAY,
                 (E_PH_OSAL_EVT_RF | E_PH_OSAL_EVT_ABORT), &tReceivedEvents);
         }
 
-        MY_DEBUG_PRINT();
+        MY_DEBUG_PRINT("phOsal_EventPend: 0x%x e", (E_PH_OSAL_EVT_RF | E_PH_OSAL_EVT_ABORT));
         /*Handle abort event*/
         if ((E_PH_OSAL_EVT_ABORT & tReceivedEvents) || (statusTmp != PH_ERR_SUCCESS))
         {
@@ -99,7 +99,7 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
         }
         else
         {
-            MY_DEBUG_PRINT();
+            MY_DEBUG_PRINT("Read the IRQ register ");
             /* Read the IRQ register and check if the interrupt has occured */
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_ReadRegister(pDataParams, IRQ_STATUS, &dwRegister));
 
@@ -108,14 +108,16 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
 
             if ((bEnableIrq & PHHAL_HW_DISABLE_IRQ_CLEAR_MASK) == PH_OFF)
             {
-                MY_DEBUG_PRINT();
+                MY_DEBUG_PRINT("Reg: IRQ clear");
                 /* Clear all Interrupts for e.g Tx interrupt during receive */
                 PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegister(pDataParams, IRQ_SET_CLEAR, dwRegister));
             }
-            MY_DEBUG_PRINT();
+
+            MY_DEBUG_PRINT("disable IRQ");
             /* Disable IRQ sources */
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegisterAndMask(pDataParams, IRQ_ENABLE, (uint32_t)~dwIrqWaitFor));
 
+            MY_DEBUG_PRINT("Clear event: 0x%x", E_PH_OSAL_EVT_RF);
             (void)phOsal_EventClear(&pDataParams->HwEventObj.EventHandle, E_OS_EVENT_OPT_NONE, E_PH_OSAL_EVT_RF, NULL);
 
             return PH_ERR_SUCCESS;
@@ -156,10 +158,7 @@ phStatus_t phhalHw_Pn5180_WaitIrq(
         }
     }
 
-    MY_DEBUG_PRINT();
-
     return PH_ERR_SUCCESS;
-
 }
 
 #endif  /* NXPBUILD__PHHAL_HW_PN5180 */

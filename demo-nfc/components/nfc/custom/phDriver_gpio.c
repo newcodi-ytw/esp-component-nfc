@@ -147,6 +147,7 @@ uint8_t phDriver_PinRead(uint32_t            dwPinNumber,
 
         EventBits_t retBit = 0;
         uint8_t ret = 0;
+    #if 0
         // if (xPortIsInsideInterrupt())
         if(0)
         {
@@ -164,6 +165,11 @@ uint8_t phDriver_PinRead(uint32_t            dwPinNumber,
             ret = (retBit & mask) ? 1 : 0;
             return ret;
         }
+    #endif
+        // phOsal_ThreadDelay(10);
+        extern void phhalHw_Pn5180_CustomPostCb(void);
+        phhalHw_Pn5180_CustomPostCb();
+        ret = 1;
 
         return ret;
     }

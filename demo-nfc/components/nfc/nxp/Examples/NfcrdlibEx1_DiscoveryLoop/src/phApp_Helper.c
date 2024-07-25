@@ -34,7 +34,7 @@
 #include <phOsal.h>
 
 #undef DEBUG_PRINTF
-#define DEBUG_PRINTF(fmt, ...) MY_DEBUG_PRINT2(fmt, ...)
+#define DEBUG_PRINTF(fmt, ...) MY_DEBUG_PRINT(fmt, ...)
 
 /*******************************************************************************
 **   Function Declarations

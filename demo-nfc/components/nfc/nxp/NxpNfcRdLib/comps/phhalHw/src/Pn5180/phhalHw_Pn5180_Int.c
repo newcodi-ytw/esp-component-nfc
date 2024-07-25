@@ -1312,7 +1312,7 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
     uint8_t     PH_MEMLOC_REM aCrc[2];
     uint8_t     PH_MEMLOC_REM bBackup = 0U;
     uint8_t     PH_MEMLOC_REM bRfActiveErrCause = 0U;
-MY_DEBUG_PRINT();
+MY_DEBUG_PRINT("s");
     /* Now wait for the IRQ */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_WaitIrq(
         pDataParams,
@@ -1320,11 +1320,12 @@ MY_DEBUG_PRINT();
         PH_OFF,
         dwIrqWaitFor,
         &dwIrqReg));
-MY_DEBUG_PRINT();
+MY_DEBUG_PRINT("e");
     /* If in active mode, retrieve the content of the RF_STATUS register */
     if (pDataParams->bActiveMode == PH_ON)
-    {MY_DEBUG_PRINT();
+    {
         PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_ReadRegister(pDataParams, RF_STATUS, &dwRegister));
+        MY_DEBUG_PRINT("Reg: RF_STATUS: 0x%x", dwRegister);
     }
 
     /* Check if an error has occurred */
@@ -1348,7 +1349,8 @@ MY_DEBUG_PRINT();
    {
         /* Reset after timeout behavior */
         if (pDataParams->bRfResetAfterTo != PH_OFF)
-        {MY_DEBUG_PRINT();
+        {
+            MY_DEBUG_PRINT();
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_FieldReset(pDataParams));
         }
 
@@ -1457,7 +1459,8 @@ MY_DEBUG_PRINT();
         }
 
         if(wTmpBufferLen != 0U)
-        {MY_DEBUG_PRINT();
+        {
+            MY_DEBUG_PRINT("reading the RX FIFO");
             /* Prepare the command for reading the RX FIFO of the Pn5180 */
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_RetrieveRxData(
                 pDataParams,
@@ -1468,7 +1471,8 @@ MY_DEBUG_PRINT();
         /* Extract RX last bits */
         dwTemp = dwValue & RX_STATUS_RX_NUM_LAST_BITS_MASK;
         dwTemp = dwTemp >> RX_STATUS_RX_NUM_LAST_BITS_POS;
-MY_DEBUG_PRINT();
+
+        MY_DEBUG_PRINT("wAdditionalInfo: 0x%x", dwTemp);
         /* Set RX last bits */
         pDataParams->wAdditionalInfo = (uint16_t)dwTemp;
 
@@ -1543,7 +1547,7 @@ MY_DEBUG_PRINT();
         {
             /* For QAC */
         }
-MY_DEBUG_PRINT();
+
 #ifndef PN5180_P2P_HW_SYNC_BYTE
         if ((pDataParams->bNfcipMode) == PH_ON && (wTmpBufferLen != 0U))
         {
@@ -1568,6 +1572,8 @@ MY_DEBUG_PRINT();
         {
             *pRxLength = pDataParams->wRxBufLen;
         }
+
+        // PCD_HelpShowByte("Rx:", *ppRxBuffer, *pRxLength);
 
         if(pDataParams->bJewelActivated == PH_ON && ((status == PH_ERR_SUCCESS) || ( status & PH_ERR_MASK) == PH_ERR_SUCCESS_INCOMPLETE_BYTE))
         {
@@ -1632,6 +1638,7 @@ MY_DEBUG_PRINT();
         }
     }
 
+    MY_DEBUG_PRINT("status: 0x%x", status);
     return PH_ADD_COMPCODE(status, PH_COMP_HAL);
 }
 

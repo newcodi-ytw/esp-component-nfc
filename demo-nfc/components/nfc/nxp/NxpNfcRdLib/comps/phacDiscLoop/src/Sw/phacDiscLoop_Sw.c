@@ -264,8 +264,6 @@ phStatus_t phacDiscLoop_Sw_Run(
                                )
 {
     phStatus_t PH_MEMLOC_REM wDiscloopStatus;
-MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
-
     /* Disable Emd Check */
     PH_CHECK_SUCCESS_FCT(wDiscloopStatus, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_SET_EMD, PH_OFF));
 
@@ -278,9 +276,6 @@ MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
     switch (bEntryPoint)
     {
     case ((uint8_t)PHAC_DISCLOOP_ENTRY_POINT_POLL):
-
-        MY_DEBUG_PRINT("pDataParams->bPollState:%d\n", pDataParams->bPollState);
-
 #ifdef NXPBUILD__PHAC_DISCLOOP_LPCD
         /* Perform LPCD if Enabled. */
         if ((0U != (pDataParams->bLpcdEnabled))
@@ -299,11 +294,12 @@ MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
             }
         }
 #endif /* NXPBUILD__PHAC_DISCLOOP_LPCD */
-        MY_DEBUG_PRINT();
+        MY_DEBUG_PRINT("pDataParams->bPollState:%d\n", pDataParams->bPollState);
         /* Check for active poll configuration */
         if((0U != (pDataParams->bActPollTechCfg))
            && (pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_DETECTION))
-        {MY_DEBUG_PRINT();
+        {
+            MY_DEBUG_PRINT("active poll configuration ");
             wDiscloopStatus = phacDiscLoop_Sw_Int_ActivePollMode(pDataParams);
             /* Continue with passive polling, if no peer detected */
             if((wDiscloopStatus & PH_ERR_MASK) != PHAC_DISCLOOP_NO_TECH_DETECTED)
@@ -322,7 +318,8 @@ MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
         }
         /* Check for passive poll configuration */
         if(0U != (pDataParams->bPasPollTechCfg))
-        {MY_DEBUG_PRINT();
+        {
+            MY_DEBUG_PRINT("passive poll configuration");
             /* Perform the Poll operation and store the Status code. */
             wDiscloopStatus = phacDiscLoop_Sw_Int_PollMode(pDataParams);
 
@@ -335,7 +332,8 @@ MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
             return wDiscloopStatus;
         }
         else
-        {MY_DEBUG_PRINT();
+        {
+            MY_DEBUG_PRINT("NO TECH DETECTED");
             pDataParams->bDetectedTechs = 0x00;
             pDataParams->bNumOfCards = 0x00;
             return PH_ADD_COMPCODE_FIXED(PHAC_DISCLOOP_NO_TECH_DETECTED, PH_COMP_AC_DISCLOOP);

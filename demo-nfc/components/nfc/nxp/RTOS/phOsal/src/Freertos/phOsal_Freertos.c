@@ -268,12 +268,12 @@ phStatus_t phOsal_EventPend(volatile phOsal_Event_t * eventHandle, phOsal_EventO
     {
         return (PH_OSAL_ERROR | PH_COMP_OSAL);
     }
-MY_DEBUG_PRINT("***** : 0x%x", FlagsToWait);
+// MY_DEBUG_PRINT("***** : 0x%x", FlagsToWait);
     CurrentFlags = xEventGroupWaitBits(*eventHandle, FlagsToWait,
         (options & E_OS_EVENT_OPT_PEND_CLEAR_ON_EXIT) >> E_OS_EVENT_OPT_POS_PEND_CLEAR_ON_EXIT,
         (options & E_OS_EVENT_OPT_PEND_SET_ALL) >> E_OS_EVENT_OPT_POS_PEND_SET_ALL,
         ticksToWait);
-MY_DEBUG_PRINT("----- : 0x%x", FlagsToWait);
+// MY_DEBUG_PRINT("----- : 0x%x", FlagsToWait);
     if (pCurrFlags != NULL)
     {
         *pCurrFlags = CurrentFlags;

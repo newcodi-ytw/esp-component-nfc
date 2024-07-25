@@ -13,7 +13,7 @@
 
 void NFC_Run(void)
 {
-    MY_DEBUG_PRINT("NFC Run\n");
+    printf("NFC Run\n");
     phNfc_Example_Init();
 }
 void NFC_ReadE2Prom_Version(void)
@@ -30,31 +30,25 @@ void NFC_ReadE2Prom_Version(void)
         );
     CHECK_SUCCESS(wStatus);
 
-    MY_DEBUG_PRINT("(%d)wFirmwareVer: 0x%x\n", wStatus, bFirmwareVer);
+    printf("(%d)wFirmwareVer: 0x%x\n", wStatus, bFirmwareVer);
 }
 
 #include "phhalHw_Pn5180_Reg.h"
 void NFC_UpdateConfig(uint16_t config, uint16_t value)
 {
-    // MY_DEBUG_PRINT("Set config: %d, value: %d", config, value);
-    // phhalHw_Pn5180_SetConfig(pHal, config, value);
-
-    // value = 0xA123;
-    // phhalHw_Pn5180_GetConfig(pHal, config, &value);
-    // MY_DEBUG_PRINT("Get config: %d, value: %d", config, value);
     if(value == PH_ON)
     {
         /* Enable RF-ON Interrupt*/
         phhalHw_Pn5180_Instr_WriteRegister(pHal, IRQ_ENABLE, IRQ_ENABLE_RFON_DET_IRQ_SET_ENABLE_MASK);
 
-        MY_DEBUG_PRINT2("enable IRQ Reg");
+        printf("enable IRQ Reg");
     }
     else
     {
         /* Disable RF-ON Interrupt*/
         phhalHw_Pn5180_Instr_WriteRegisterAndMask(pHal, IRQ_ENABLE,  ~(uint32_t)IRQ_ENABLE_RFON_DET_IRQ_SET_ENABLE_MASK);
 
-        MY_DEBUG_PRINT2("disable IRQ Reg");
+        printf("disable IRQ Reg");
     }
 }
 

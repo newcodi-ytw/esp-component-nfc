@@ -431,10 +431,12 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
     uint8_t    PH_MEMLOC_REM bNumOfTechsFound = 0;
 
     status = PH_ERR_INVALID_PARAMETER;
-    MY_DEBUG_PRINT("status: 0x%x", status);
+    MY_DEBUG_PRINT("pDataParams->bPollState: 0x%x", pDataParams->bPollState);
 
     if(pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_DETECTION)
     {
+        MY_DEBUG_PRINT("bPollState: PHAC_DISCLOOP_POLL_STATE_DETECTION");
+
         if((pDataParams->bOpeMode == RD_LIB_MODE_NFC) ||
            (pDataParams->bOpeMode == RD_LIB_MODE_ISO))
         {
@@ -445,6 +447,11 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
                 pDataParams->bPasPollBailOut,
                 pDataParams->bPasPollTechCfg,
                 &bNumOfTechsFound);
+
+            if (((status) & PH_ERR_MASK) == PH_ERR_ABORTED)
+            {
+                MY_DEBUG_PRINT("RD_LIB_MODE_NFC ABORTED!");
+            }
             /* Return if status is aborted. */
             PH_CHECK_ABORT(status);
             MY_DEBUG_PRINT("status: 0x%x RD_LIB_MODE_NFC", status);
@@ -456,6 +463,11 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
                 pDataParams,
                 pDataParams->bPasPollTechCfg,
                 &bNumOfTechsFound);
+            
+            if (((status) & PH_ERR_MASK) == PH_ERR_ABORTED)
+            {
+                MY_DEBUG_PRINT("RD_LIB_MODE_EMVCO ABORTED!");
+            }
             /* Return if status is aborted. */
             PH_CHECK_ABORT(status);
             MY_DEBUG_PRINT("status: 0x%x RD_LIB_MODE_EMVCO", status);
@@ -465,17 +477,21 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
             ;/* Do Nothing */
             MY_DEBUG_PRINT("status: 0x%x Do Nothing", status);
         }
-        MY_DEBUG_PRINT("status: 0x%x", status);
+
+        MY_DEBUG_PRINT("bPollState: PHAC_DISCLOOP_POLL_STATE_DETECTION end");
+
         if ((0U != (pDataParams->bLpcdEnabled)) &&
            (0U != (pDataParams->bPasPollTechCfg)) &&
            ((status & PH_ERR_MASK) == PHAC_DISCLOOP_NO_TECH_DETECTED))
-        {MY_DEBUG_PRINT();
+        {
+            MY_DEBUG_PRINT();
             /* LPCD is success but card presence does not exist/errors */
             return PH_ADD_COMPCODE_FIXED(PHAC_DISCLOOP_LPCD_NO_TECH_DETECTED, PH_COMP_AC_DISCLOOP);
         }
 
         if((status & PH_ERR_MASK) == PHAC_DISCLOOP_TECH_DETECTED)
-        {MY_DEBUG_PRINT();
+        {
+            MY_DEBUG_PRINT("tech detected");
             pDataParams->bPollState = PHAC_DISCLOOP_POLL_STATE_COLLISION_RESOLUTION;
         }
     }
@@ -483,13 +499,15 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
     /* Go for collision resolution if single tech found */
     if(pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_COLLISION_RESOLUTION)
     {
-        MY_DEBUG_PRINT("status: 0x%x", status);
+        MY_DEBUG_PRINT("status: STATE_COLLISION_RESOLUTION");
         /* Get Technology to be resolved */
         bResolveTech = pDataParams->bDetectedTechs & pDataParams->bPasPollTechCfg;
         if(0U != (bResolveTech))
-        {MY_DEBUG_PRINT();
+        {
+            MY_DEBUG_PRINT("bResolveTech: %d", bResolveTech);
             if(0U != (bResolveTech & (uint8_t)(bResolveTech - 1U)))
-            {MY_DEBUG_PRINT();
+            {
+                MY_DEBUG_PRINT("bResolveTech NVALID_PARAMETER");
                 return PH_ADD_COMPCODE_FIXED(PH_ERR_INVALID_PARAMETER, PH_COMP_AC_DISCLOOP);
             }
         }
@@ -499,26 +517,34 @@ phStatus_t phacDiscLoop_Sw_Int_PollMode(
         }
 
         PHAC_DISCLOOP_GET_BIT_POS(bResolveTech, bTechType);
-        MY_DEBUG_PRINT("bResolveTech: 0x%x", bResolveTech);
+        MY_DEBUG_PRINT("bResolveTech: 0x%x bTechType: %d", bResolveTech, bTechType);
+        
         status = phacDiscLoop_Sw_Int_ColsnReslnActivity(pDataParams, (bTechType -  (uint8_t)1U));
         if((status & PH_ERR_MASK) == PHAC_DISCLOOP_DEVICE_RESOLVED)
-        {MY_DEBUG_PRINT();
-                /* Activation */
-                status = phacDiscLoop_Sw_Int_ActivateDevice(pDataParams, (bTechType - (uint8_t)1U), (uint8_t)0x00U);
+        {
+            MY_DEBUG_PRINT("Activation");
+            /* Activation */
+            status = phacDiscLoop_Sw_Int_ActivateDevice(pDataParams, (bTechType - (uint8_t)1U), (uint8_t)0x00U);
         }
+
+        MY_DEBUG_PRINT("colsnReslnActivity - e");
         /* Return if status is aborted. */
         PH_CHECK_ABORT(status);
     }
-    MY_DEBUG_PRINT("bResolveTech: 0x%x", bResolveTech);
+
+    MY_DEBUG_PRINT("POLL_STATE_REMOVAL s");
     if(pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_REMOVAL)
     {
+        MY_DEBUG_PRINT("pDataParams->bPollState: 0x%x", pDataParams->bPollState);
         if(pDataParams->bOpeMode == RD_LIB_MODE_EMVCO)
         {
             status = phacDiscLoop_Sw_Int_EmvcoRemovalProcedure(pDataParams);
-            MY_DEBUG_PRINT("status: 0x%x", status);
+            MY_DEBUG_PRINT("phacDiscLoop_Sw_Int_EmvcoRemovalProcedure status: 0x%x", status);
         }
     }
-    MY_DEBUG_PRINT("status: 0x%x", status);
+
+    MY_DEBUG_PRINT("end status: 0x%x", status);
+    
     return PH_ADD_COMPCODE(status, PH_COMP_AC_DISCLOOP);
 }
 
@@ -695,7 +721,7 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
                     /* Apply Guard time. */
                     PH_CHECK_SUCCESS_FCT(status, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_POLL_GUARD_TIME_US,
                         pDataParams->waPasPollGTimeUs[bTechIndex]));
-                    MY_DEBUG_PRINT("status: 0x%x - Apply Guard time", status);
+                    MY_DEBUG_PRINT("Field passive Guard %d", pDataParams->waPasPollGTimeUs[bTechIndex]);
                 }
             }
 
@@ -722,7 +748,8 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
                     /* Apply Guard time. */
                     PH_CHECK_SUCCESS_FCT(status, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_POLL_GUARD_TIME_US,
                         pDataParams->waPasPollGTimeUs[bTechIndex]));
-                        MY_DEBUG_PRINT("status: 0x%x - Apply Guard time", status);
+                    
+                    MY_DEBUG_PRINT("Field passive Guard %d", pDataParams->waPasPollGTimeUs[bTechIndex]);
                 }
             }
 
@@ -732,13 +759,15 @@ phStatus_t phacDiscLoop_Sw_Int_TechDetectActivity(
 
             if ((status & PH_ERR_MASK) == PHAC_DISCLOOP_TECH_DETECTED)
             {
+                MY_DEBUG_PRINT("Set the corresponding detected bit.");
                 /*Set the corresponding detected bit. */
                 pDataParams->bDetectedTechs |= PH_ON << bTechIndex;
                 bNumOfTechsFound++;
                 /* Since Device detected at 212 Baud, Skip polling at 424 */
                 if((0U != ((pDataParams->bDetectedTechs & PHAC_DISCLOOP_POS_BIT_MASK_F212)))
                         || (0U != ((pDataParams->bDetectedTechs & PHAC_DISCLOOP_POS_BIT_MASK_F424))))
-                {MY_DEBUG_PRINT()
+                {
+                    MY_DEBUG_PRINT("bNumOfTechsFound: %d", bNumOfTechsFound);
                     *pNumOfTechsDetect = bNumOfTechsFound;
                     bTechTypeF_Detected = PH_ON;
                 }
@@ -973,8 +1002,10 @@ phStatus_t phacDiscLoop_Sw_Int_ColsnReslnActivity(
     /*Re-set number of card*/
     pDataParams->bNumOfCards = 0x00;
 
+    MY_DEBUG_PRINT("call pfColnRelsns[%d]() s", bTechType);
     /* Call the selected collision resolution function */
     wStatus = pfColnRelsns[bTechType](pDataParams);
+    MY_DEBUG_PRINT("call pfColnRelsns[%d]() e", bTechType);
 
     if((wStatus & PH_ERR_MASK) == PH_ERR_SUCCESS)
     {

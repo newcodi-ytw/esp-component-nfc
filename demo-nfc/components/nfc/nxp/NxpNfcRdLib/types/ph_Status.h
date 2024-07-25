@@ -24,13 +24,14 @@
 
 #include <ph_TypeDefs.h>
 
-#if 0
+extern void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len);
+#if 1
 #define MY_DEBUG_PRINT(fmt, ...)    
-
-#define MY_DEBUG_PRINT2(format, ...)
 #else
-#define MY_DEBUG_PRINT(format, ...) esp_rom_printf("%s[%d]::%s: "format" \n", __FILENAME__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
-#define MY_DEBUG_PRINT2(format, ...) esp_rom_printf("%s[%d]::%s: "format" \n", __FILENAME__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
+#define MY_DEBUG_PRINT(format, ...) \
+    do{\
+        esp_rom_printf("%s[%d]::%s: "format" \n", __FILENAME__, __LINE__, __FUNCTION__, ##__VA_ARGS__); \
+    }while(0);
 #endif
 
 #ifndef NXPBUILD_DELETE
