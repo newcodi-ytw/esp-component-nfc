@@ -68,10 +68,13 @@ set(nfc_lib
 )
     
 #supported protocol
-set(TECH_I14443P3A_SW TRUE)
+set(NXPBUILD__PHPAL_I14443P3A_SW TRUE)
+set(NXPBUILD__PHPAL_I14443P3B_SW TRUE)
+set(NXPBUILD__PHPAL_I14443P4A_SW TRUE)
+set(NXPBUILD__PHPAL_I14443P4_SW TRUE)
 set(PHPAL_MIFARE_SW TRUE)
 
-if(TECH_I14443P3A_SW)
+if(NXPBUILD__PHPAL_I14443P3A_SW)
     message(WARNING "**** NXPBUILD__PHPAL_I14443P3A_SW ****")
     list(APPEND compile_flags 
         "-DNXPBUILD__PHPAL_I14443P3A_SW"
@@ -80,6 +83,42 @@ if(TECH_I14443P3A_SW)
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/Sw/phpalI14443p3a_Sw.c"
         "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/phpalI14443p3a.c"
+    )
+endif()
+
+if(NXPBUILD__PHPAL_I14443P3B_SW)
+    message(WARNING "**** NXPBUILD__PHPAL_I14443P3B_SW ****")
+    list(APPEND compile_flags 
+        "-DNXPBUILD__PHPAL_I14443P3B_SW"
+    )
+    #I14443P3B_SW
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phpalI14443p3b/src/Sw/phpalI14443p3b_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalI14443p3b/src/phpalI14443p3b.c"
+    )
+endif()
+
+if(NXPBUILD__PHPAL_I14443P4A_SW)
+    message(WARNING "**** NXPBUILD__PHPAL_I14443P4A_SW ****")
+    list(APPEND compile_flags 
+        "-DNXPBUILD__PHPAL_I14443P4A_SW"
+    )
+    #I14443P4A_SW
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phpalI14443p4a/src/Sw/phpalI14443p4a_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalI14443p4a/src/phpalI14443p4a.c"
+    )
+endif()
+
+if(NXPBUILD__PHPAL_I14443P4_SW)
+    message(WARNING "**** NXPBUILD__PHPAL_I14443P4_SW ****")
+    list(APPEND compile_flags 
+        "-DNXPBUILD__PHPAL_I14443P4_SW"
+    )
+    #I14443P4A_SW
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/Sw/phpalI14443p4_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/phpalI14443p4.c"
     )
 endif()
 

@@ -379,7 +379,7 @@ uint16_t NFCForumProcess(uint16_t wEntryPoint, phStatus_t DiscLoopStatus)
 
         /* Update the Entry point to LISTEN mode. */
         wReturnEntryPoint = PHAC_DISCLOOP_ENTRY_POINT_LISTEN;
-        DEBUG_LOG_UI("pdate the Entry point to LISTEN mode");
+        DEBUG_LOG_UI("Update the Entry point to LISTEN mode.");
     }
     else
     {
