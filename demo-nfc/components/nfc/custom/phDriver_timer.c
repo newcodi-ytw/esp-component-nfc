@@ -5,6 +5,7 @@
 
 #include "ph_Status.h"
 #include "phDriver.h"
+#include "phCustomHelper.h"
 
 // The time, in ticks, to block waiting for timer operations.
 #define BLOCK_TIME 10

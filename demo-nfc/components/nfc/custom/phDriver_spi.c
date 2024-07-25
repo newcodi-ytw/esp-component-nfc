@@ -6,6 +6,7 @@
 #include "BoardSelection.h"
 
 #include "phDriver.h"
+#include "phCustomHelper.h"
 
 esp_err_t init_spi(spi_device_handle_t *dev) {
     esp_err_t rv;

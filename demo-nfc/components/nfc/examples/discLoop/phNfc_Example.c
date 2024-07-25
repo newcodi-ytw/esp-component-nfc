@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "phApp_Init.h"
 
+#include "phCustomHelper.h"
+
 #include "phNfc_Example.h"
 
 phacDiscLoop_Sw_DataParams_t       * pDiscLoop;       /* Discovery loop component */

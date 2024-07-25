@@ -22,7 +22,7 @@
 #ifndef PH_STATUS_H
 #define PH_STATUS_H
 
-#include <phNfc_Example.h>
+#include <phCustomHelper.h>
 #include <ph_TypeDefs.h>
 
 #ifndef NXPBUILD_DELETE

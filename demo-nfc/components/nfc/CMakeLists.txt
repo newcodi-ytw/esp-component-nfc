@@ -22,10 +22,6 @@ set(nfc_lib
     "custom/phDriver_timer.c"
     "custom/phDriver_spi.c"
     "custom/phDriver_gpio.c"
-
-    "src/phApp_PN5180_Init.c"
-    "src/phApp_Init.c"
-    "src/phApp_Helper.c"
     
     "nxp/RTOS/phOsal/src/Freertos/phOsal_Freertos.c"
 
@@ -69,8 +65,6 @@ set(nfc_lib
 set(nfc_lib_inc
     "custom/include"
 
-    "src/inc"
-
     "nxp/NxpNfcRdLib/types"
     "nxp/NxpNfcRdLib/intfs"
     "nxp/NxpNfcRdLib/comps"
@@ -95,7 +89,14 @@ if(EXAMPLE_DISC_LOOP)
         "-DEXAMPLE_DISC_LOOP"
     )
     list(APPEND nfc_lib 
-        "src/phNfc_Example.c"
+        "examples/discLoop/phApp_PN5180_Init.c"
+        "examples/discLoop/phApp_Init.c"
+        "examples/discLoop/phApp_Helper.c"
+        
+        "examples/discLoop/phNfc_Example.c"
+    )    
+    list(APPEND nfc_lib_inc
+        "examples/discLoop/inc"
     )
 endif()
     
