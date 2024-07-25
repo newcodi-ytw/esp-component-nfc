@@ -164,10 +164,17 @@ void phNfc_Example_Main(void  *pDataParams)
         }
         else
         {
+            DEBUG_LOG_UI("\n==============================================================================\n");
             DEBUG_LOG_CORE("wEntryPoint:%d DiscLoopStatus:%d s", wEntryPoint, status);
             wEntryPoint = NFCForumProcess(wEntryPoint, status);
             DEBUG_LOG_CORE("wEntryPoint:%d DiscLoopStatus:%d s", wEntryPoint, status);
-
+            DEBUG_LOG_UI("\n==============================================================================\n");
+        #if 0
+            phacDiscLoop_Sw_DataParams_t *temp = (phacDiscLoop_Sw_DataParams_t *)pDataParams;
+            PCD_HelpShowByte("UUID:", 
+                            temp->sTypeATargetInfo.aTypeA_I3P3[0].aUid,
+                            temp->sTypeATargetInfo.aTypeA_I3P3[0].bUidSize);
+        #endif
             /* Set Poll Configuration */
             statustmp = phacDiscLoop_SetConfig(pDataParams, PHAC_DISCLOOP_CONFIG_PAS_POLL_TECH_CFG, bSavePollTechCfg);
             CHECK_STATUS(statustmp);
@@ -175,11 +182,6 @@ void phNfc_Example_Main(void  *pDataParams)
             /* Switch off RF field */
             statustmp = phhalHw_FieldOff(pHal);
             CHECK_STATUS(statustmp);
-
-            phacDiscLoop_Sw_DataParams_t *temp = (phacDiscLoop_Sw_DataParams_t *)pDataParams;
-            PCD_HelpShowByte("UUID:", 
-                            temp->sTypeATargetInfo.aTypeA_I3P3[0].aUid,
-                            temp->sTypeATargetInfo.aTypeA_I3P3[0].bUidSize);
 
             /* Wait for field-off time-out */
             statustmp = phhalHw_Wait(pHal, PHHAL_HW_TIME_MICROSECONDS, 1000*30);
@@ -397,9 +399,9 @@ uint16_t NFCForumProcess(uint16_t wEntryPoint, phStatus_t DiscLoopStatus)
             status = phhalHw_SetConfig(pHal, PHHAL_HW_CONFIG_RFON_INTERRUPT, PH_ON);
             CHECK_STATUS(status);
 
-            DEBUG_LOG_UI("LISTEN_PHASE_TIME_MS: %d", LISTEN_PHASE_TIME_MS);
+            DEBUG_LOG_CORE("phhalHw_EventWait: %d", LISTEN_PHASE_TIME_MS);
             status = phhalHw_EventWait(pHal, LISTEN_PHASE_TIME_MS);
-            DEBUG_LOG_UI("phhalHw_EventWait: %d", status);
+            DEBUG_LOG_CORE("phhalHw_EventWait: %d", status);
             if((status & PH_ERR_MASK) == PH_ERR_IO_TIMEOUT)
             {
                 wReturnEntryPoint = PHAC_DISCLOOP_ENTRY_POINT_POLL;

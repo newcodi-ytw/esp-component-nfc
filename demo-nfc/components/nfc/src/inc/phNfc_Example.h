@@ -4,10 +4,11 @@
 #include <ph_Status.h>
 #include <ph_TypeDefs.h>
 
-#define DEBUG_LOG_CORE_ENABLE
+// #define DEBUG_LOG_CORE_ENABLE
 // #define DEBUG_LOG_RTOS_ENABLE
 // #define DEBUG_LOG_TIMER_ENABLE
 // #define DEBUG_LOG_HW_ENABLE
+
 #define DEBUG_LOG_UI_ENABLE
 
 extern void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len);

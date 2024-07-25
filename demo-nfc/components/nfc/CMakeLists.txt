@@ -14,6 +14,7 @@ set(compile_flags
     "-Wno-error=implicit-function-declaration"
     "-Wno-error=memset-elt-size"
     "-Wno-error=maybe-uninitialized"
+    "-Wno-error=unused-but-set-parameter"
 )
 
 set(nfc_lib 
@@ -67,19 +68,53 @@ set(nfc_lib
     "nxp/NxpNfcRdLib/comps/phTools/src/phTools_Q.c"
 )
     
-#supported protocol
+#supported protocol - XXXX disable
+set(NXPBUILD_CRYPTO_KEY FALSE)
+set(NXPBUILD__PHHAL_HW_PN7640 FALSE)
+set(NXPBUILD__PHHAL_HW_PN76XX FALSE)
+
+#supported protocol - VVVV enable
 set(NXPBUILD__PHPAL_I14443P3A_SW TRUE)
 set(NXPBUILD__PHPAL_I14443P3B_SW TRUE)
 set(NXPBUILD__PHPAL_I14443P4A_SW TRUE)
 set(NXPBUILD__PHPAL_I14443P4_SW TRUE)
-set(PHPAL_MIFARE_SW TRUE)
+set(NXPBUILD__PHPAL_MIFARE_SW TRUE)
+set(NXPBUILD__PHPAL_FELICA_SW TRUE)
+set(NXPBUILD__PHPAL_SLI15693_SW TRUE)
+
+if(NXPBUILD_CRYPTO_KEY)
+    message(WARNING "**** NXPBUILD_CRYPTO_KEY ****")
+    list(APPEND compile_flags 
+        "-DNXPBUILD__PH_KEYSTORE_SW"
+        "-DNXPBUILD__PH_CRYPTOSYM_SW"
+        "-DNXPBUILD__PH_CRYPTORNG_SW"
+    )
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phKeyStore/src/Sw/phKeyStore_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phKeyStore/src/phKeyStore.c"
+        "nxp/NxpNfcRdLib/comps/phKeyStore/src/Rc663/phKeyStore_Rc663.c"
+
+        "nxp/NxpNfcRdLib/comps/phalMfc/src/Sw/phalMfc_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phalMfc/src/phalMfc_Int.c"
+        "nxp/NxpNfcRdLib/comps/phalMfc/src/phalMfc.c"
+
+        "nxp/NxpNfcRdLib/comps/phCryptoRng/src/Sw/phCryptoRng_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phCryptoRng/src/phCryptoRng.c"
+
+        "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Sw_Int.c"
+        "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Sw_Des.c"
+        "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Sw_Aes.c"
+        "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Lrp.c"
+        "nxp/NxpNfcRdLib/comps/phCryptoSym/src/Sw/phCryptoSym_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phCryptoSym/src/phCryptoSym.c"
+    )
+endif()
 
 if(NXPBUILD__PHPAL_I14443P3A_SW)
     message(WARNING "**** NXPBUILD__PHPAL_I14443P3A_SW ****")
     list(APPEND compile_flags 
         "-DNXPBUILD__PHPAL_I14443P3A_SW"
     )
-    #I14443P3A_SW
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/Sw/phpalI14443p3a_Sw.c"
         "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/phpalI14443p3a.c"
@@ -91,7 +126,6 @@ if(NXPBUILD__PHPAL_I14443P3B_SW)
     list(APPEND compile_flags 
         "-DNXPBUILD__PHPAL_I14443P3B_SW"
     )
-    #I14443P3B_SW
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p3b/src/Sw/phpalI14443p3b_Sw.c"
         "nxp/NxpNfcRdLib/comps/phpalI14443p3b/src/phpalI14443p3b.c"
@@ -103,7 +137,6 @@ if(NXPBUILD__PHPAL_I14443P4A_SW)
     list(APPEND compile_flags 
         "-DNXPBUILD__PHPAL_I14443P4A_SW"
     )
-    #I14443P4A_SW
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p4a/src/Sw/phpalI14443p4a_Sw.c"
         "nxp/NxpNfcRdLib/comps/phpalI14443p4a/src/phpalI14443p4a.c"
@@ -115,19 +148,17 @@ if(NXPBUILD__PHPAL_I14443P4_SW)
     list(APPEND compile_flags 
         "-DNXPBUILD__PHPAL_I14443P4_SW"
     )
-    #I14443P4A_SW
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/Sw/phpalI14443p4_Sw.c"
         "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/phpalI14443p4.c"
     )
 endif()
 
-if(PHPAL_MIFARE_SW)
+if(NXPBUILD__PHPAL_MIFARE_SW)
     message(WARNING "**** DNXPBUILD__PHPAL_MIFARE_SW ****")
     list(APPEND compile_flags 
         "-DNXPBUILD__PHPAL_MIFARE_SW"
     )
-    #Mifare SW
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalMifare/src/Sw/phpalMifare_Sw.c"
         "nxp/NxpNfcRdLib/comps/phpalMifare/src/phpalMifare.c"
@@ -138,6 +169,61 @@ if(PHPAL_MIFARE_SW)
         "nxp/NxpNfcRdLib/comps/phalMful/src/Sw/phalMful_Sw.c"
         "nxp/NxpNfcRdLib/comps/phalMful/src/phalMful_Int.c"
         "nxp/NxpNfcRdLib/comps/phalMful/src/phalMful.c"
+    )
+endif()
+
+if(NXPBUILD__PHPAL_FELICA_SW)
+    message(WARNING "**** NXPBUILD__PHPAL_FELICA_SW ****")
+    list(APPEND compile_flags 
+        "-DNXPBUILD__PHPAL_FELICA_SW"
+    )
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phalFelica/src/Sw/phalFelica_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phalFelica/src/phalFelica.c"
+
+        "nxp/NxpNfcRdLib/comps/phpalFelica/src/Sw/phpalFelica_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalFelica/src/phpalFelica.c"
+    )
+endif()
+
+if(NXPBUILD__PHPAL_SLI15693_SW)
+    message(WARNING "**** NXPBUILD__PHPAL_SLI15693_SW ****")
+    list(APPEND compile_flags 
+        "-DNXPBUILD__PHPAL_SLI15693_SW"
+    )
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phpalSli15693/src/Sw/phpalSli15693_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalSli15693/src/phpalSli15693.c"
+        "nxp/NxpNfcRdLib/comps/phalICode/src/Sw/phalICode_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phalICode/src/phalICode.c"
+        "nxp/NxpNfcRdLib/comps/phalICode/src/phalICode_Int.c"
+    )
+endif()
+
+if(NOT NXPBUILD__PHHAL_HW_PN7640)
+    message(WARNING "**** NOT NXPBUILD__PHHAL_HW_PN7640 ****")
+    list(APPEND compile_flags 
+        # "-DNXPBUILD__PHPAL_I18000P3M3_SW"
+    )
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phalI18000p3m3/src/Sw/phalI18000p3m3_Sw_Int.c"
+        "nxp/NxpNfcRdLib/comps/phalI18000p3m3/src/Sw/phalI18000p3m3_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phalI18000p3m3/src/phalI18000p3m3.c"
+
+        "nxp/NxpNfcRdLib/comps/phpalI18000p3m3/src/Sw/phpalI18000p3m3_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalI18000p3m3/src/phpalI18000p3m3.c"
+    )
+endif()
+
+if(NOT NXPBUILD__PHHAL_HW_PN76XX)
+    message(WARNING "**** NOT NXPBUILD__PHHAL_HW_PN76XX ****")
+    list(APPEND compile_flags 
+        # "-DNXPBUILD__PHPAL_I18092MPI_SW"
+    )
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phpalI18092mPI/src/Sw/phpalI18092mPI_Sw_Int.c"
+        "nxp/NxpNfcRdLib/comps/phpalI18092mPI/src/Sw/phpalI18092mPI_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalI18092mPI/src/phpalI18092mPI.c"
     )
 endif()
 
