@@ -84,9 +84,13 @@
             #define  DEBUG_PRINTF(...) printf(__VA_ARGS__); fflush(stdout)
         #endif /* PHDRIVER_KINETIS_K82 */
     #else /* DEBUG */
-        #define  DEBUG_PRINTF(...)
+        // #define  DEBUG_PRINTF(...)
         #define  DEBUG_SCANF(...)
     #endif /* DEBUG */
+
+    #define DEBUG_PRINTF(fmt, ...)    do{\
+        esp_rom_printf("%s[%d]::%s: "fmt" \n", __FILENAME__, __LINE__, __FUNCTION__, ##__VA_ARGS__); \
+    }while(0);
 #else /* __PN76XX__ */
     #if (SEGGER_RTT_ENABLE == 1)
         #include "SEGGER_RTT.h"
