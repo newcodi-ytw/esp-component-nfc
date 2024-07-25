@@ -58,7 +58,7 @@ void phDriver_GpioSendFakeISR(void)
     MY_DEBUG_PRINT("set by uart: %d\n", mask);
 }
 
-static void gpio_isr(void *param) {
+void IRAM_ATTR gpio_isr(void *param) {
     EventBits_t mask = (EventBits_t)param;
     BaseType_t do_switch = pdFALSE;
     BaseType_t xResult = pdFALSE;
@@ -128,11 +128,11 @@ phStatus_t phDriver_PinConfig(uint32_t               dwPinNumber,
     if(err != ESP_OK) return PH_DRIVER_ERROR;
 
     // if(intr == GPIO_INTR_DISABLE) return PH_DRIVER_SUCCESS;
-    // err = gpio_set_intr_type(dwPinNumber, intr);
 
     // Set the interrupt handler.
     EventBits_t mask = (1 << (dwPinNumber & 0x1f));
     err = gpio_isr_handler_add(dwPinNumber, gpio_isr, (void *)mask);
+    err = gpio_set_intr_type(dwPinNumber, intr);
 
     return err == ESP_OK ? PH_DRIVER_SUCCESS : PH_DRIVER_ERROR;
 }

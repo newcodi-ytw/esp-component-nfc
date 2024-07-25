@@ -783,7 +783,7 @@ phStatus_t phpalI14443p3a_Sw_RequestAEx(
     /* Only 7 bits are valid */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_TXLASTBITS, 7));
     
-    MY_DEBUG_PRINT("bReqCode:%d",bReqCode);
+    MY_DEBUG_PRINT("bReqCode: 0x%0x",bReqCode);
     /* Send ReqA command */
     cmd[0] = bReqCode;
     statusTmp = phhalHw_Exchange(pDataParams->pHalDataParams, PH_EXCHANGE_DEFAULT, cmd, 1, &pResp, &wRespLength);

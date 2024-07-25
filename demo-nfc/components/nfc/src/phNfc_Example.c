@@ -128,7 +128,7 @@ void phNfc_Example_Main(void  *pDataParams)
     static uint32_t cnt = 0;
     while(1)
     {
-        MY_DEBUG_PRINT2("auto-detect-loop: %d", cnt++);
+        MY_DEBUG_PRINT2("Detect LOOP: %d", cnt++);
         /* Before polling set Discovery Poll State to Detection , as later in the code it can be changed to e.g. PHAC_DISCLOOP_POLL_STATE_REMOVAL*/
         statustmp = phacDiscLoop_SetConfig(pDataParams, PHAC_DISCLOOP_CONFIG_NEXT_POLL_STATE, PHAC_DISCLOOP_POLL_STATE_DETECTION);
         CHECK_STATUS(statustmp);
@@ -185,6 +185,8 @@ void phNfc_Example_Main(void  *pDataParams)
             statustmp = phhalHw_Wait(pHal, PHHAL_HW_TIME_MICROSECONDS, 5100);
             CHECK_STATUS(statustmp);
         }
+
+        MY_DEBUG_PRINT2("end");
     }
 }
 

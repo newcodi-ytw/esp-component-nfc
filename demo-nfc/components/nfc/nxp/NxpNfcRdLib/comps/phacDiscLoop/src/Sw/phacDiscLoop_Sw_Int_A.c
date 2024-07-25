@@ -72,7 +72,7 @@ MY_DEBUG_PRINT();
     wStatus = phpalI14443p3a_WakeUpA(
         pDataParams->pPal1443p3aDataParams,
         pDataParams->sTypeATargetInfo.aTypeA_I3P3[0].aAtqa);
-MY_DEBUG_PRINT();
+MY_DEBUG_PRINT("wStatus: 0x%x", wStatus);
     if(0u != (phacDiscLoop_Sw_Int_IsValidPollStatus(wStatus)))
     {
         if((wStatus & PH_ERR_MASK) == PH_ERR_COLLISION_ERROR)
