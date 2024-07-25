@@ -230,7 +230,7 @@ static void phhalHw_Pn5180_EventCallback(void * pDataParams)
     phhalHw_Pn5180_DataParams_t * pPn5180DataParams = NULL;
     pPn5180DataParams = (phhalHw_Pn5180_DataParams_t*) pDataParams;
     /* Post Abort Event. */
-    MY_DEBUG_PRINT("phOsal_EventPost: %d", E_PH_OSAL_EVT_RF);
+    DEBUG_LOG_RTOS("phOsal_EventPost: %d", E_PH_OSAL_EVT_RF);
     (void)phOsal_EventPost(&pPn5180DataParams->HwEventObj.EventHandle, E_OS_EVENT_OPT_POST_ISR, E_PH_OSAL_EVT_RF, NULL);
 }
 
@@ -238,7 +238,7 @@ static void phhalHw_Pn5180_GuardTimeCallBck(void)
 {
     if(xEventHandle != NULL)
     {
-        MY_DEBUG_PRINT("%d", E_PH_OSAL_EVT_GT_EXP);
+        DEBUG_LOG_RTOS("%d", E_PH_OSAL_EVT_GT_EXP);
         (void)phOsal_EventPost(&xEventHandle, E_OS_EVENT_OPT_POST_ISR, E_PH_OSAL_EVT_GT_EXP, NULL);
     }
 }
@@ -247,7 +247,7 @@ void phhalHw_Pn5180_CustomPostCb(void)
 {
     if(xEventHandle != NULL)
     {
-        MY_DEBUG_PRINT("%d", E_PH_OSAL_EVT_RF);
+        DEBUG_LOG_RTOS("%d", E_PH_OSAL_EVT_RF);
         (void)phOsal_EventPost(&xEventHandle, E_OS_EVENT_OPT_POST_ISR, E_PH_OSAL_EVT_RF, NULL);
     }
 }
@@ -263,7 +263,6 @@ phStatus_t phhalHw_Pn5180_Init(
     uint16_t wRxBufSize
     )
 {
-    // MY_DEBUG_PRINT("");
     phStatus_t PH_MEMLOC_REM statusTmp;
     uint8_t    PH_MEMLOC_REM bFirmwareVer[2];
     uint8_t PH_MEMLOC_BUF bDigitalDelayCfg;
@@ -711,7 +710,7 @@ phStatus_t phhalHw_Pn5180_Exchange(
 
         if (pDataParams->bActiveMode == PH_OFF)
         {
-            MY_DEBUG_PRINT("Check Field");
+            DEBUG_LOG_CORE("Check Field");
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_ReadRegister(pDataParams, RF_STATUS, &dwRegister));
 
             if((dwRegister & RF_STATUS_TX_RF_STATUS_MASK ) == 0U)
@@ -719,7 +718,7 @@ phStatus_t phhalHw_Pn5180_Exchange(
                 return PH_ADD_COMPCODE_FIXED(PH_ERR_RF_ERROR, PH_COMP_HAL);
             }
         }
-        MY_DEBUG_PRINT("Field 0x%x", dwRegister);
+        DEBUG_LOG_CORE("Field 0x%x", dwRegister);
 
         /* retrieve transmit buffer */
         PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_GetTxBuffer(pDataParams, PH_ON, &pTmpBuffer, &wTmpBufferLen, &wTmpBufferSize));
@@ -814,7 +813,7 @@ phStatus_t phhalHw_Pn5180_Exchange(
         }
 
         /*Execute the Tranceive Command*/
-        MY_DEBUG_PRINT("PHHAL_HW_PN5180_SYSTEM_TRANSEIVE_CMD");
+        DEBUG_LOG_CORE("PHHAL_HW_PN5180_SYSTEM_TRANSEIVE_CMD");
         PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_Int_LoadCommand(pDataParams, PHHAL_HW_PN5180_SYSTEM_TRANSEIVE_CMD));
 
         /*Set wait IRQ */
@@ -833,13 +832,13 @@ phStatus_t phhalHw_Pn5180_Exchange(
         }
 
         /* Clear Interrupts  */
-        MY_DEBUG_PRINT("Clear Interrupts");
+        DEBUG_LOG_CORE("Clear Interrupts");
         PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegister(pDataParams, IRQ_SET_CLEAR, PHHAL_HW_PN5180_IRQ_SET_CLEAR_ALL_MASK));
 
         (void)phOsal_EventClear(&pDataParams->HwEventObj.EventHandle, E_OS_EVENT_OPT_NONE, E_PH_OSAL_EVT_RF, NULL);
 
         /* Enable IRQ sources */
-        MY_DEBUG_PRINT("Enable IRQ sources");
+        DEBUG_LOG_CORE("Enable IRQ sources");
         PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegister(pDataParams, IRQ_ENABLE, dwIrqWaitFor));
 
         /* Configure T1 */
@@ -850,7 +849,7 @@ phStatus_t phhalHw_Pn5180_Exchange(
             {
                 dwValue |=PHHAL_HW_PN5180_MS_TIMEOUT_PRESCALAR;
             }
-            MY_DEBUG_PRINT("Configure T1");
+            DEBUG_LOG_CORE("Configure T1");
             PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegister(pDataParams, TIMER1_CONFIG, dwValue));
         }
 
@@ -861,7 +860,7 @@ phStatus_t phhalHw_Pn5180_Exchange(
             {
                 dwValue |=PHHAL_HW_PN5180_MS_TIMEOUT_PRESCALAR;
             }
-            MY_DEBUG_PRINT("TIMER1_CONFIG");
+            DEBUG_LOG_CORE("TIMER1_CONFIG");
             PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegister(pDataParams, TIMER1_CONFIG, dwValue ));
         }
 
@@ -873,14 +872,14 @@ phStatus_t phhalHw_Pn5180_Exchange(
         /* During Active Communication mode if internal RF Field is not ON before transmit then Switch ON the RF Field. */
         if (pDataParams->bActiveMode)
         {
-            MY_DEBUG_PRINT("check RF_STATUS");
+            DEBUG_LOG_CORE("check RF_STATUS");
             PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_Instr_ReadRegister(pDataParams, RF_STATUS, &dwValue));
             if ((0U == ((dwValue & RF_STATUS_TX_RF_STATUS_MASK))))
             {
-                MY_DEBUG_PRINT("phhalHw_Pn5180_FieldOff");
+                DEBUG_LOG_CORE("phhalHw_Pn5180_FieldOff");
                 /* field is turned ON */
                 PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_FieldOff(pDataParams));
-                MY_DEBUG_PRINT("phhalHw_Pn5180_FieldOn");
+                DEBUG_LOG_CORE("phhalHw_Pn5180_FieldOn");
                 PH_CHECK_FAILURE_FCT(statusTmp, phhalHw_Pn5180_FieldOn(pDataParams));
             }
         }
@@ -888,33 +887,33 @@ phStatus_t phhalHw_Pn5180_Exchange(
 
     if (pDataParams->bPollGuardTimeFlag == PH_ON)
     {
-        MY_DEBUG_PRINT("pDataParams->bPollGuardTimeFlag");
+        DEBUG_LOG_CORE("pDataParams->bPollGuardTimeFlag");
         pDataParams->bPollGuardTimeFlag = PH_OFF;
 
         /* When there is no errors in preconditions wait till timer expire. */
         if (statusTmp == PH_ERR_SUCCESS)
         {
-            MY_DEBUG_PRINT("Wait Event: 0x%x s", (E_PH_OSAL_EVT_GT_EXP | E_PH_OSAL_EVT_ABORT));
+            DEBUG_LOG_CORE("Wait Event: 0x%x s", (E_PH_OSAL_EVT_GT_EXP | E_PH_OSAL_EVT_ABORT));
             /* Wait infinitely for the Poll Guard Time to Expire. */
             (void)phOsal_EventPend(&xEventHandle, (phOsal_EventOpt_t)(E_OS_EVENT_OPT_PEND_SET_ANY | E_OS_EVENT_OPT_PEND_CLEAR_ON_EXIT),
                     PHOSAL_MAX_DELAY, E_PH_OSAL_EVT_GT_EXP | E_PH_OSAL_EVT_ABORT, &dwEventFlags);
             if(0U != (dwEventFlags & E_PH_OSAL_EVT_ABORT))
             {
-                MY_DEBUG_PRINT("PH_ERR_ABORTED");
+                DEBUG_LOG_CORE("PH_ERR_ABORTED");
                 statusTmp = PH_ERR_ABORTED;
             }
 
-            MY_DEBUG_PRINT("Wait Event: 0x%x e", (E_PH_OSAL_EVT_GT_EXP | E_PH_OSAL_EVT_ABORT));
+            DEBUG_LOG_CORE("Wait Event: 0x%x e", (E_PH_OSAL_EVT_GT_EXP | E_PH_OSAL_EVT_ABORT));
         }
 
-        MY_DEBUG_PRINT("status(%d): phDriver_TimerStop", status);
+        DEBUG_LOG_CORE("status(%d): phDriver_TimerStop", status);
         /* Disable Timer */
         PH_CHECK_SUCCESS_FCT(status, phDriver_TimerStop());
     }
 
     if (statusTmp != PH_ERR_SUCCESS)
     {
-        MY_DEBUG_PRINT("statusTmp(%d): PH_ERR_SUCCESS", statusTmp);
+        DEBUG_LOG_CORE("statusTmp(%d): PH_ERR_SUCCESS", statusTmp);
         return statusTmp;
     }
 
@@ -938,19 +937,19 @@ phStatus_t phhalHw_Pn5180_Exchange(
         PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_SetConfig(pDataParams, PHHAL_HW_CONFIG_TXLASTBITS, 0x00U));
     }
 
-    MY_DEBUG_PRINT("wait IRQ for Rx Buffer");
+    DEBUG_LOG_CORE("wait IRQ for Rx Buffer");
     status  = phhalHw_Pn5180_Receive_Int(pDataParams,dwIrqWaitFor,ppRxBuffer,pRxLength,PH_ON);
 
     if( (status & PH_ERR_MASK) != PH_ERR_SUCCESS)
     {
-        MY_DEBUG_PRINT("load idle command");
+        DEBUG_LOG_CORE("load idle command");
         /*load idle command*/
         statusTmp = phhalHw_Pn5180_Int_IdleCommand(pDataParams);
     }
 
     if (pDataParams->bOpeMode != RD_LIB_MODE_EMVCO)
     {
-        MY_DEBUG_PRINT("disable TIMER1_CONFIG");
+        DEBUG_LOG_CORE("disable TIMER1_CONFIG");
         statusTmp = phhalHw_Pn5180_Instr_WriteRegisterAndMask(pDataParams, TIMER1_CONFIG, (uint32_t)(~TIMER1_CONFIG_T1_ENABLE_MASK));
     }
     
@@ -979,28 +978,28 @@ phStatus_t phhalHw_Pn5180_FieldOn(
         | IRQ_SET_CLEAR_RFON_DET_IRQ_CLR_MASK    \
         | IRQ_SET_CLEAR_RFOFF_DET_IRQ_CLR_MASK);
 
-    MY_DEBUG_PRINT("Reg: IRQ Clear");
+    DEBUG_LOG_CORE("Reg: IRQ Clear");
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegisterOrMask(pDataParams, IRQ_SET_CLEAR, dwRegister));
 
-    MY_DEBUG_PRINT("Reg: RF ON");
+    DEBUG_LOG_CORE("Reg: RF ON");
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_RfOn(pDataParams, bRFONconfig));      /* Field ON using Collision Avoidance option */
 
-    MY_DEBUG_PRINT("Reg: RF status");
+    DEBUG_LOG_CORE("Reg: RF status");
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_ReadRegister(pDataParams, RF_STATUS, &dwRegister));
 
-    MY_DEBUG_PRINT("Reg: RF: 0x%x", dwRegister);
+    DEBUG_LOG_CORE("Reg: RF: 0x%x", dwRegister);
     if((dwRegister & RF_STATUS_TX_RF_STATUS_MASK ) == 0U)
     {
         if(0U != (dwRegister & IRQ_STATUS_RF_ACTIVE_ERROR_IRQ_MASK ))
         {
-            MY_DEBUG_PRINT("EXT RF Error");
+            DEBUG_LOG_CORE("EXT RF Error");
             return PH_ADD_COMPCODE_FIXED(PH_ERR_EXT_RF_ERROR, PH_COMP_HAL);
         }
-        MY_DEBUG_PRINT("RF Error");
+        DEBUG_LOG_CORE("RF Error");
         return PH_ADD_COMPCODE_FIXED(PH_ERR_RF_ERROR, PH_COMP_HAL);
     }
 
-    MY_DEBUG_PRINT("RF Turned ON");
+    DEBUG_LOG_CORE("RF Turned ON");
     return PH_ERR_SUCCESS;
 }
 
@@ -1027,7 +1026,7 @@ phStatus_t phhalHw_Pn5180_Wait(
     uint16_t wTimeout
     )
 {
-    // MY_DEBUG_PRINT("");
+    // DEBUG_LOG_CORE("");
     phStatus_t  PH_MEMLOC_REM  statusTmp;
     uint32_t    PH_MEMLOC_REM dwLoadValue;
     uint32_t    PH_MEMLOC_REM wPrescaler;
@@ -1725,7 +1724,7 @@ phStatus_t phhalHw_Pn5180_SetConfig(
         break;
 
     case PHHAL_HW_CONFIG_RFON_INTERRUPT:
-        MY_DEBUG_PRINT("enable IRQ Reg");
+        DEBUG_LOG_CORE("enable IRQ Reg");
         if((wValue != PH_ON) && (wValue != PH_OFF))
         {
             return PH_ADD_COMPCODE_FIXED(PH_ERR_INVALID_PARAMETER, PH_COMP_HAL);
@@ -1736,7 +1735,7 @@ phStatus_t phhalHw_Pn5180_SetConfig(
             /* Enable RF-ON Interrupt*/
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_WriteRegister(pDataParams, IRQ_ENABLE, IRQ_ENABLE_RFON_DET_IRQ_SET_ENABLE_MASK));
 
-            MY_DEBUG_PRINT("enable IRQ Reg");
+            DEBUG_LOG_CORE("enable IRQ Reg");
         }
         else
         {

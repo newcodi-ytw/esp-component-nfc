@@ -220,7 +220,7 @@ void DiscoveryLoop_Demo(void  *pDataParams)
     statustmp = phhalHw_FieldOff(pHal);
     CHECK_STATUS(statustmp);
 
-    MY_DEBUG_PRINT("started \n");
+    DEBUG_LOG_CORE("started \n");
 
     while(1)
     {
@@ -247,9 +247,9 @@ void DiscoveryLoop_Demo(void  *pDataParams)
 #endif /* PH_EXAMPLE1_LPCD_ENABLE*/
 
         /* Start discovery loop */
-        MY_DEBUG_PRINT("%d %d - s\n", wEntryPoint, status);
+        DEBUG_LOG_CORE("%d %d - s\n", wEntryPoint, status);
         status = phacDiscLoop_Run(pDataParams, wEntryPoint);
-        MY_DEBUG_PRINT("%d %d - e\n", wEntryPoint, status);
+        DEBUG_LOG_CORE("%d %d - e\n", wEntryPoint, status);
 
         if(bProfile == PHAC_DISCLOOP_PROFILE_EMVCO)
         {
@@ -277,7 +277,7 @@ void DiscoveryLoop_Demo(void  *pDataParams)
         }
     }
 
-    MY_DEBUG_PRINT("ended \n");
+    DEBUG_LOG_CORE("ended \n");
 }
 
 uint16_t NFCForumProcess(uint16_t wEntryPoint, phStatus_t DiscLoopStatus)
@@ -289,7 +289,7 @@ uint16_t NFCForumProcess(uint16_t wEntryPoint, phStatus_t DiscLoopStatus)
     uint8_t       bIndex;
     uint16_t      wReturnEntryPoint;
 
-    MY_DEBUG_PRINT("%s %d %d\n", __FUNCTION__, wEntryPoint, DiscLoopStatus);
+    DEBUG_LOG_CORE("%s %d %d\n", __FUNCTION__, wEntryPoint, DiscLoopStatus);
 
     if(wEntryPoint == PHAC_DISCLOOP_ENTRY_POINT_POLL)
     {

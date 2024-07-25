@@ -161,27 +161,27 @@ phStatus_t phpalI14443p3a_Sw_HaltA(
     uint8_t *   PH_MEMLOC_REM pResp = NULL;
     uint16_t    PH_MEMLOC_REM wRespLength = 0;
     
-    MY_DEBUG_PRINT("Set halt timeout");
+    DEBUG_LOG_CORE("Set halt timeout");
     /* Set halt timeout */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
         PHHAL_HW_CONFIG_TIMEOUT_VALUE_US,
         PHPAL_I14443P3A_HALT_TIME_US + PHPAL_I14443P3A_EXT_TIME_US));
 
-    MY_DEBUG_PRINT("TXCRC - ON");
+    DEBUG_LOG_CORE("TXCRC - ON");
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_TXCRC, PH_ON));
 
-    MY_DEBUG_PRINT("RXCRC - ON");
+    DEBUG_LOG_CORE("RXCRC - ON");
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXCRC, PH_ON));
 
     /* Send HltA command */
     cmd[0] = PHPAL_I14443P3A_HALT_CMD;
     cmd[1] = 0x00;
 
-    MY_DEBUG_PRINT("HaltA CMD");
+    DEBUG_LOG_CORE("HaltA CMD");
     status = phhalHw_Exchange(pDataParams->pHalDataParams, PH_EXCHANGE_DEFAULT, cmd, 2, &pResp, &wRespLength);
 
-    MY_DEBUG_PRINT("HaltA CMD - 0x%x", status);
+    DEBUG_LOG_CORE("HaltA CMD - 0x%x", status);
     switch (status & PH_ERR_MASK)
     {
         /* HltA command should timeout -> success */
@@ -743,14 +743,14 @@ phStatus_t phpalI14443p3a_Sw_RequestAEx(
     uint16_t    PH_MEMLOC_REM wRespLength = 0;
     uint16_t    PH_MEMLOC_REM wRegister;
 
-    MY_DEBUG_PRINT();
+    DEBUG_LOG_CORE();
 
     /* Disable MIFARE Classic contactless IC Crypto1 */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
         PHHAL_HW_CONFIG_DISABLE_MF_CRYPTO1,
         PH_ON));
-    MY_DEBUG_PRINT("disable MF crypto1");
+    DEBUG_LOG_CORE("disable MF crypto1");
 
     /* Reset default data rates */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
@@ -758,38 +758,38 @@ phStatus_t phpalI14443p3a_Sw_RequestAEx(
         PHHAL_HW_CONFIG_TXDATARATE_FRAMING,
         PHHAL_HW_RF_DATARATE_106));
 
-    MY_DEBUG_PRINT("reset default data rates");
+    DEBUG_LOG_CORE("reset default data rates");
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
         PHHAL_HW_CONFIG_RXDATARATE_FRAMING,
         PHHAL_HW_RF_DATARATE_106));
-    MY_DEBUG_PRINT("set rx data rate");
+    DEBUG_LOG_CORE("set rx data rate");
 
     /* Set selection timeout */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(
         pDataParams->pHalDataParams,
         PHHAL_HW_CONFIG_TIMEOUT_VALUE_US,
         PHPAL_I14443P3A_SELECTION_TIME_US + PHPAL_I14443P3A_EXT_TIME_US));
-    MY_DEBUG_PRINT("set selection timeout");
+    DEBUG_LOG_CORE("set selection timeout");
 
     /* Retrieve RxWaitTime */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_GetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXWAIT_US, &wRegister));
-    MY_DEBUG_PRINT("get RxWaitTimes: %d", wRegister);
+    DEBUG_LOG_CORE("get RxWaitTimes: %d", wRegister);
 
     /* Set RxWaitTime to 76 microseconds equivalent to 8 Bits. */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXWAIT_US, 76));
-    MY_DEBUG_PRINT("set RxWaitTime: 76");
+    DEBUG_LOG_CORE("set RxWaitTime: 76");
 
     /* Switch off CRC */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_TXCRC, PH_OFF));
-    MY_DEBUG_PRINT("Switch off TX CRC");
+    DEBUG_LOG_CORE("Switch off TX CRC");
 
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXCRC, PH_OFF));
-    MY_DEBUG_PRINT("Switch off RX CRC");
+    DEBUG_LOG_CORE("Switch off RX CRC");
 
     /* Only 7 bits are valid */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_TXLASTBITS, 7));
-    MY_DEBUG_PRINT("Only 7 bits are valid");
+    DEBUG_LOG_CORE("Only 7 bits are valid");
 
     /* Send ReqA command */
     cmd[0] = bReqCode;
@@ -798,13 +798,13 @@ phStatus_t phpalI14443p3a_Sw_RequestAEx(
 
     /* Restore previous RxWaitTime */
     PH_CHECK_SUCCESS_FCT(Status, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_RXWAIT_US, wRegister));
-    MY_DEBUG_PRINT("Restore RxWaitTime: %d", wRegister);
+    DEBUG_LOG_CORE("Restore RxWaitTime: %d", wRegister);
 
     PH_CHECK_SUCCESS(statusTmp);
     /* Check and copy ATQA */
     if (wRespLength == PHPAL_I14443P3A_ATQA_LENGTH)
     {
-        MY_DEBUG_PRINT("I14443P3A_ATQA_");
+        DEBUG_LOG_CORE("I14443P3A_ATQA_");
         (void)memcpy(pAtqa, pResp, PHPAL_I14443P3A_ATQA_LENGTH);
         /* Emvco: case_id: TA304_10, TA304_11, TA304_12 */
         if(pDataParams->bOpeMode == RD_LIB_MODE_EMVCO)
@@ -812,7 +812,7 @@ phStatus_t phpalI14443p3a_Sw_RequestAEx(
             /*5.3.2*/
             if(0U != (pAtqa[1] & 0xF0U))    /* Most significant nibble of byte 2 must be 0 */
             {
-                MY_DEBUG_PRINT("ISO14443P3A::ERROR:: Most significant nibble of byte 2 must be 0");
+                DEBUG_LOG_CORE("ISO14443P3A::ERROR:: Most significant nibble of byte 2 must be 0");
                 return PH_ADD_COMPCODE_FIXED(PH_ERR_PROTOCOL_ERROR, PH_COMP_PAL_ISO14443P3A);
             }
         }
@@ -821,18 +821,18 @@ phStatus_t phpalI14443p3a_Sw_RequestAEx(
             /* NFCForum-TS-DigitalProtocol-1.0, Requirement 18, Section 4.6.3.3 */
             if((((pAtqa[0] & 0x1FU) == 0x00U) && ((pAtqa[1] & 0x0FU) != 0x0CU)) || (((pAtqa[1] & 0x0FU) == 0x0CU) && ((pAtqa[0] & 0x1FU) != 0x00U)))
             {
-                MY_DEBUG_PRINT("ISO14443P3A::ERROR:: Requirement 18");
+                DEBUG_LOG_CORE("ISO14443P3A::ERROR:: Requirement 18");
                 return PH_ADD_COMPCODE_FIXED(PH_ERR_PROTOCOL_ERROR, PH_COMP_PAL_ISO14443P3A);
             }
         }
     }
     else
     {
-        MY_DEBUG_PRINT("PROTOCOL ERROR");
+        DEBUG_LOG_CORE("PROTOCOL ERROR");
         return PH_ADD_COMPCODE_FIXED(PH_ERR_PROTOCOL_ERROR, PH_COMP_PAL_ISO14443P3A);
     }
 
-    MY_DEBUG_PRINT("ISO14443P3A:: PROTOCOL OK");
+    DEBUG_LOG_CORE("ISO14443P3A:: PROTOCOL OK");
     return PH_ERR_SUCCESS;
 }
 

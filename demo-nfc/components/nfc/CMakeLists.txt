@@ -65,11 +65,42 @@ set(nfc_lib
     #tools
     "nxp/NxpNfcRdLib/comps/phTools/src/phTools.c"
     "nxp/NxpNfcRdLib/comps/phTools/src/phTools_Q.c"
-
-    #supported protocol
-    "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/Sw/phpalI14443p3a_Sw.c"
-    "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/phpalI14443p3a.c"
 )
+    
+#supported protocol
+set(TECH_I14443P3A_SW TRUE)
+set(PHPAL_MIFARE_SW TRUE)
+
+if(TECH_I14443P3A_SW)
+    message(WARNING "**** NXPBUILD__PHPAL_I14443P3A_SW ****")
+    list(APPEND compile_flags 
+        "-DNXPBUILD__PHPAL_I14443P3A_SW"
+    )
+    #I14443P3A_SW
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/Sw/phpalI14443p3a_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/phpalI14443p3a.c"
+    )
+endif()
+
+if(PHPAL_MIFARE_SW)
+    message(WARNING "**** DNXPBUILD__PHPAL_MIFARE_SW ****")
+    list(APPEND compile_flags 
+        "-DNXPBUILD__PHPAL_MIFARE_SW"
+    )
+    #Mifare SW
+    list(APPEND nfc_lib 
+        "nxp/NxpNfcRdLib/comps/phpalMifare/src/Sw/phpalMifare_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalMifare/src/phpalMifare.c"
+        "nxp/NxpNfcRdLib/comps/phalMfdf/src/Sw/phalMfdf_Sw_Int.c"
+        "nxp/NxpNfcRdLib/comps/phalMfdf/src/Sw/phalMfdf_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phalMfdf/src/phalMfdf_Int.c"
+        "nxp/NxpNfcRdLib/comps/phalMfdf/src/phalMfdf.c"
+        "nxp/NxpNfcRdLib/comps/phalMful/src/Sw/phalMful_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phalMful/src/phalMful_Int.c"
+        "nxp/NxpNfcRdLib/comps/phalMful/src/phalMful.c"
+    )
+endif()
 
 set(nfc_lib_inc
     "custom/include"

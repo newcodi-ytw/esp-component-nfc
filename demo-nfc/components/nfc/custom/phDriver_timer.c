@@ -40,7 +40,7 @@ phStatus_t phDriver_TimerStart(phDriver_Timer_Unit_t eTimerUnit, uint32_t dwTime
             // Do nothing if it's milliseconds.
             break;
     }
-    MY_DEBUG_PRINT("timer start: %d MS\n", period);
+    DEBUG_LOG_TIMER("timer start: %d MS\n", period);
     TickType_t tick = pdMS_TO_TICKS(period);
     if(tick == 0) tick = 1;
 

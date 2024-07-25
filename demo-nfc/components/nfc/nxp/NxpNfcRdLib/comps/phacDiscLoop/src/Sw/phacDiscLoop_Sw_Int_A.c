@@ -68,33 +68,33 @@ phStatus_t phacDiscLoop_Sw_DetTechTypeA(
         pDataParams->sTypeATargetInfo.aTypeA_I3P3[bIndex].bUidSize = 0U;
     }
         
-        MY_DEBUG_PRINT();
+        DEBUG_LOG_CORE();
     /* sending the WakeUpA */
     wStatus = phpalI14443p3a_WakeUpA(
         pDataParams->pPal1443p3aDataParams,
         pDataParams->sTypeATargetInfo.aTypeA_I3P3[0].aAtqa);
         
-        MY_DEBUG_PRINT("phpalI14443p3a_WakeUpA wStatus: 0x%x", wStatus);
+        DEBUG_LOG_CORE("phpalI14443p3a_WakeUpA wStatus: 0x%x", wStatus);
     if(0u != (phacDiscLoop_Sw_Int_IsValidPollStatus(wStatus)))
     {
         if((wStatus & PH_ERR_MASK) == PH_ERR_COLLISION_ERROR)
-        {MY_DEBUG_PRINT();
+        {DEBUG_LOG_CORE();
             pDataParams->bCollPend |= PHAC_DISCLOOP_POS_BIT_MASK_A;
         }
 
         PH_CHECK_SUCCESS_FCT(wStatus, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_TXWAIT_US, 500));
         
-        MY_DEBUG_PRINT("Halt the detected cards.");
+        DEBUG_LOG_CORE("Halt the detected cards.");
         /* Halt the detected cards. */
         PH_CHECK_ABORT_FCT(wStatus, phpalI14443p3a_HaltA(pDataParams->pPal1443p3aDataParams));
 
         pDataParams->sTypeATargetInfo.bTotalTagsFound = 1;
 
-        MY_DEBUG_PRINT("bTotalTagsFound = 1");
+        DEBUG_LOG_CORE("bTotalTagsFound = 1");
     }
     else
     {
-        MY_DEBUG_PRINT("X IsValidPollStatus: %d", wStatus);
+        DEBUG_LOG_CORE("X IsValidPollStatus: %d", wStatus);
         return wStatus;
     }
 
@@ -133,7 +133,7 @@ phStatus_t phacDiscLoop_Sw_Int_CollisionResolutionA(
         return PH_ADD_COMPCODE_FIXED(PHAC_DISCLOOP_NO_DEVICE_RESOLVED, PH_COMP_AC_DISCLOOP);
     }
 
-    MY_DEBUG_PRINT("Symbol 0");
+    DEBUG_LOG_CORE("Symbol 0");
     /*Symbol 0*/
     /* Apply Guard time. */
     PH_CHECK_SUCCESS_FCT(status, phhalHw_SetConfig(
@@ -141,13 +141,13 @@ phStatus_t phacDiscLoop_Sw_Int_CollisionResolutionA(
         PHHAL_HW_CONFIG_POLL_GUARD_TIME_US,
         pDataParams->waPasPollGTimeUs[PHAC_DISCLOOP_TECH_TYPE_A]));
 
-    MY_DEBUG_PRINT("cfg for TypeA tech");
+    DEBUG_LOG_CORE("cfg for TypeA tech");
     /* Configure HW for the TypeA technology */
     PH_CHECK_SUCCESS_FCT(status, phhalHw_ApplyProtocolSettings(
         pDataParams->pHalDataParams,
         PHHAL_HW_CARDTYPE_ISO14443A));
 
-    MY_DEBUG_PRINT("Send WakeUp A");
+    DEBUG_LOG_CORE("Send WakeUp A");
     /* Send WakeUpA */
     status = phpalI14443p3a_WakeUpA(
         pDataParams->pPal1443p3aDataParams,
@@ -167,7 +167,7 @@ phStatus_t phacDiscLoop_Sw_Int_CollisionResolutionA(
     pDataParams->sTypeATargetInfo.bT1TFlag = 0;
     pDataParams->sTypeATargetInfo.bTotalTagsFound = 0;
 
-    MY_DEBUG_PRINT("Symbol 1");
+    DEBUG_LOG_CORE("Symbol 1");
     /*Symbol 1*/
     if ((status & PH_ERR_MASK) == PH_ERR_SUCCESS)
     {
@@ -258,7 +258,7 @@ phStatus_t phacDiscLoop_Sw_Int_CollisionResolutionA(
         }
     }
 
-    MY_DEBUG_PRINT("Symbol 2");
+    DEBUG_LOG_CORE("Symbol 2");
     /*Symbol 2*/
     if(0U == (pDataParams->bUseAntiColl))
     {
@@ -269,7 +269,7 @@ phStatus_t phacDiscLoop_Sw_Int_CollisionResolutionA(
 
     while (bDeviceCount <= pDataParams->baPasConDevLim[PHAC_DISCLOOP_TECH_TYPE_A])
     {
-        MY_DEBUG_PRINT("bDeviceCount: %d", bDeviceCount);
+        DEBUG_LOG_CORE("bDeviceCount: %d", bDeviceCount);
         if (bTypeATagIdx <= pDataParams->baPasConDevLim[PHAC_DISCLOOP_TECH_TYPE_A])
         {
             /*Symbol 4*/

@@ -82,7 +82,7 @@
 
 /*********************************************************************************************************************************************************************************/
 
-#define NXPBUILD__PHPAL_I14443P3A_SW                        /**< PAL ISO 14443-3A SW Component is included. */
+// #define NXPBUILD__PHPAL_I14443P3A_SW                        /**< PAL ISO 14443-3A SW Component is included. */
 
 // #define NXPBUILD__PHPAL_I14443P3B_SW                        /**< PAL ISO 14443-3B SW Component is included. */
 

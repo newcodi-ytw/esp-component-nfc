@@ -22,17 +22,8 @@
 #ifndef PH_STATUS_H
 #define PH_STATUS_H
 
+#include <phNfc_Example.h>
 #include <ph_TypeDefs.h>
-
-extern void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len);
-#if 1
-#define MY_DEBUG_PRINT(fmt, ...)    
-#else
-#define MY_DEBUG_PRINT(format, ...) \
-    do{\
-        esp_rom_printf("%s[%d]::%s: "format" \n", __FILENAME__, __LINE__, __FUNCTION__, ##__VA_ARGS__); \
-    }while(0);
-#endif
 
 #ifndef NXPBUILD_DELETE
 #include <ph_NxpBuild.h>

@@ -1312,7 +1312,7 @@ phStatus_t phhalHw_Pn5180_Receive_Int(phhalHw_Pn5180_DataParams_t * pDataParams,
     uint8_t     PH_MEMLOC_REM aCrc[2];
     uint8_t     PH_MEMLOC_REM bBackup = 0U;
     uint8_t     PH_MEMLOC_REM bRfActiveErrCause = 0U;
-MY_DEBUG_PRINT("s");
+DEBUG_LOG_CORE("s");
     /* Now wait for the IRQ */
     PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_WaitIrq(
         pDataParams,
@@ -1320,12 +1320,12 @@ MY_DEBUG_PRINT("s");
         PH_OFF,
         dwIrqWaitFor,
         &dwIrqReg));
-MY_DEBUG_PRINT("e");
+DEBUG_LOG_CORE("e");
     /* If in active mode, retrieve the content of the RF_STATUS register */
     if (pDataParams->bActiveMode == PH_ON)
     {
         PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_ReadRegister(pDataParams, RF_STATUS, &dwRegister));
-        MY_DEBUG_PRINT("Reg: RF_STATUS: 0x%x", dwRegister);
+        DEBUG_LOG_CORE("Reg: RF_STATUS: 0x%x", dwRegister);
     }
 
     /* Check if an error has occurred */
@@ -1350,7 +1350,7 @@ MY_DEBUG_PRINT("e");
         /* Reset after timeout behavior */
         if (pDataParams->bRfResetAfterTo != PH_OFF)
         {
-            MY_DEBUG_PRINT();
+            DEBUG_LOG_CORE();
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_FieldReset(pDataParams));
         }
 
@@ -1446,7 +1446,7 @@ MY_DEBUG_PRINT("e");
 #endif
         /* Read the RX_STATUS */
         PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_ReadRegister(pDataParams, RX_STATUS, &dwValue));
-MY_DEBUG_PRINT();
+DEBUG_LOG_CORE();
         if(pDataParams->bRxMultiple == PH_ON)
         {
             wTmpBufferLen = (uint16_t)((dwValue & RX_STATUS_RX_NUM_BYTES_RECEIVED_MASK) |
@@ -1460,7 +1460,7 @@ MY_DEBUG_PRINT();
 
         if(wTmpBufferLen != 0U)
         {
-            MY_DEBUG_PRINT("reading the RX FIFO");
+            DEBUG_LOG_CORE("reading the RX FIFO");
             /* Prepare the command for reading the RX FIFO of the Pn5180 */
             PH_CHECK_SUCCESS_FCT(statusTmp, phhalHw_Pn5180_Instr_RetrieveRxData(
                 pDataParams,
@@ -1472,7 +1472,7 @@ MY_DEBUG_PRINT();
         dwTemp = dwValue & RX_STATUS_RX_NUM_LAST_BITS_MASK;
         dwTemp = dwTemp >> RX_STATUS_RX_NUM_LAST_BITS_POS;
 
-        MY_DEBUG_PRINT("wAdditionalInfo: 0x%x", dwTemp);
+        DEBUG_LOG_CORE("wAdditionalInfo: 0x%x", dwTemp);
         /* Set RX last bits */
         pDataParams->wAdditionalInfo = (uint16_t)dwTemp;
 
@@ -1638,7 +1638,7 @@ MY_DEBUG_PRINT();
         }
     }
 
-    MY_DEBUG_PRINT("status: 0x%x", status);
+    DEBUG_LOG_CORE("status: 0x%x", status);
     return PH_ADD_COMPCODE(status, PH_COMP_HAL);
 }
 

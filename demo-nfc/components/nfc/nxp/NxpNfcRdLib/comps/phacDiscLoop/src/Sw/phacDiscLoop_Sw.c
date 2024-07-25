@@ -271,7 +271,7 @@ phStatus_t phacDiscLoop_Sw_Run(
     PH_CHECK_SUCCESS_FCT(wDiscloopStatus, phhalHw_SetConfig(pDataParams->pHalDataParams, PHHAL_HW_CONFIG_JEWEL_MODE, PH_OFF));
 #endif /* NXPBUILD__PHAC_DISCLOOP_TYPEA_JEWEL_TAGS */
 
-MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
+DEBUG_LOG_CORE("bEntryPoint:%d", bEntryPoint);
 
     switch (bEntryPoint)
     {
@@ -281,7 +281,7 @@ MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
         if ((0U != (pDataParams->bLpcdEnabled))
             && (pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_DETECTION))
         {
-        MY_DEBUG_PRINT();
+        DEBUG_LOG_CORE();
             wDiscloopStatus = phhalHw_Lpcd(pDataParams->pHalDataParams);
             if ((wDiscloopStatus & PH_ERR_MASK) != PH_ERR_SUCCESS)
             {
@@ -294,12 +294,12 @@ MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
             }
         }
 #endif /* NXPBUILD__PHAC_DISCLOOP_LPCD */
-        MY_DEBUG_PRINT("pDataParams->bPollState:%d\n", pDataParams->bPollState);
+        DEBUG_LOG_CORE("pDataParams->bPollState:%d", pDataParams->bPollState);
         /* Check for active poll configuration */
         if((0U != (pDataParams->bActPollTechCfg))
            && (pDataParams->bPollState == PHAC_DISCLOOP_POLL_STATE_DETECTION))
         {
-            MY_DEBUG_PRINT("active poll configuration ");
+            DEBUG_LOG_CORE("active poll configuration ");
             wDiscloopStatus = phacDiscLoop_Sw_Int_ActivePollMode(pDataParams);
             /* Continue with passive polling, if no peer detected */
             if((wDiscloopStatus & PH_ERR_MASK) != PHAC_DISCLOOP_NO_TECH_DETECTED)
@@ -319,7 +319,7 @@ MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
         /* Check for passive poll configuration */
         if(0U != (pDataParams->bPasPollTechCfg))
         {
-            MY_DEBUG_PRINT("passive poll configuration");
+            DEBUG_LOG_CORE("passive poll configuration");
             /* Perform the Poll operation and store the Status code. */
             wDiscloopStatus = phacDiscLoop_Sw_Int_PollMode(pDataParams);
 
@@ -333,7 +333,7 @@ MY_DEBUG_PRINT("bEntryPoint:%d\n", bEntryPoint);
         }
         else
         {
-            MY_DEBUG_PRINT("NO TECH DETECTED");
+            DEBUG_LOG_CORE("NO TECH DETECTED");
             pDataParams->bDetectedTechs = 0x00;
             pDataParams->bNumOfCards = 0x00;
             return PH_ADD_COMPCODE_FIXED(PHAC_DISCLOOP_NO_TECH_DETECTED, PH_COMP_AC_DISCLOOP);
