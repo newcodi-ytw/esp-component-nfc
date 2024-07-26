@@ -8,6 +8,10 @@
 #include "Nfcrdlib_SimplifiedApi_ISO.h"
 #endif
 
+#ifdef EXAMPLE_MIFARE_C
+#include "NfcrdlibEx4_MIFAREClassic.h"
+#endif
+
 #include "nfc.h"
 void NFC_Run(void)
 {
@@ -19,6 +23,10 @@ void NFC_Run(void)
 
 #ifdef EXAMPLE_SIMPLE_ISO
     SimplifiedApiDemo_Main();
+#endif
+
+#ifdef EXAMPLE_MIFARE_C
+    NfcrdlibEx4_MIFAREClassic_Main();
 #endif
 
 }

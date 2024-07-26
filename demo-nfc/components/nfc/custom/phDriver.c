@@ -113,15 +113,17 @@ phStatus_t phbalReg_Exchange(void     *pDataParams,
     if(wTxLength && pTxBuffer != NULL) {
         ESP_LOGD(TAG, "Write data:");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, pTxBuffer, wTxLength, ESP_LOG_DEBUG);
-        // PCD_HelpShowByte(">>", pTxBuffer, wTxLength);
+    #ifdef DEBUG_LOG_HW_ENABLE
+        PCD_HelpShowByte(">>", pTxBuffer, wTxLength);
+    #endif
 
         // Do the write transaction.
         ESP_ERROR_CHECK( dal_spi_transact(g_spi_dev,
                                           pTxBuffer,
                                           NULL,
                                           wTxLength) );
+        DEBUG_LOG_HW(">>>>");
     }
-
     if(wRxBufSize && pRxBuffer != NULL) {
         ESP_LOGD(TAG, "Initing %d bytes of read buffer %p", wRxBufSize, pRxBuffer);
         // Fill the read buffer, which will be outgoing, with FF.
@@ -136,9 +138,12 @@ phStatus_t phbalReg_Exchange(void     *pDataParams,
 
         ESP_LOGD(TAG, "Read data:\n");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, pRxBuffer, wTxLength, ESP_LOG_DEBUG);
-        // PCD_HelpShowByte("--", pRxBuffer, wTxLength);
+    #ifdef DEBUG_LOG_HW_ENABLE
+        PCD_HelpShowByte("--", pRxBuffer, wTxLength);
+    #endif
         *pRxLength = len;
     }
+    DEBUG_LOG_HW("----");
 
     return PH_DRIVER_SUCCESS;
 }

@@ -264,6 +264,8 @@ void SimplifiedApiDemo (void* pParams)
             {
                 (void)phhalHw_Wait(phNfcLib_GetDataParams(PH_COMP_HAL), PHHAL_HW_TIME_MILLISECONDS, 1000);
             }
+            
+            (void)phhalHw_Wait(phNfcLib_GetDataParams(PH_COMP_HAL), PHHAL_HW_TIME_MILLISECONDS, 1000*10);
 
         } while(0);
     }

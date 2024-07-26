@@ -1077,6 +1077,7 @@ phStatus_t phhalHw_Pn5180_SetTmo(
         }
     }
 
+    DEBUG_LOG_HW("pn5180 cmd TIMER1_CONFIG s");
     PH_CHECK_SUCCESS_FCT(statusTmp,
         phhalHw_Pn5180_TimerStart(
         pDataParams,
@@ -1086,6 +1087,7 @@ phStatus_t phhalHw_Pn5180_SetTmo(
         wPrescaler,
         dwLoadValue
         ));
+    DEBUG_LOG_HW("pn5180 cmd TIMER1_CONFIG e");
 
     return PH_ERR_SUCCESS;
 }

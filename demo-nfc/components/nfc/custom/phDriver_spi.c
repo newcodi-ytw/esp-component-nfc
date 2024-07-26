@@ -36,6 +36,8 @@ esp_err_t init_spi(spi_device_handle_t *dev) {
     rv = spi_bus_add_device(HSPI_HOST, &dev_cfg, dev);
     ESP_ERROR_CHECK(rv);
 
+    rv = dal_spi_lockInit();
+
     return rv;
 }
 

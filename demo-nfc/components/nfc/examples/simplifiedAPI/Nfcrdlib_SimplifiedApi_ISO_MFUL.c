@@ -22,7 +22,7 @@
  *
  *
  */
-
+#include <phCustomHelper.h>
 #include <Nfcrdlib_SimplifiedApi_ISO.h>
 
 extern phNfcLib_Transmit_t phNfcLib_TransmitInput;
@@ -82,7 +82,8 @@ uint32_t NfcLib_MifareUltralight_Reference_app()
         break;
     }
     DEBUG_LOG_UI("\nRead Data from block 5 is");
-    phApp_Print_Buff(&bDataBuffer[0], wNumberofBytes);
+    // phApp_Print_Buff(&bDataBuffer[0], wNumberofBytes);
+    PCD_HelpShowByte("block 5:", &bDataBuffer[0], wNumberofBytes);
 
     /*************************************************************************************************************************
      *********************************************MFUL WRITE******************************************************************

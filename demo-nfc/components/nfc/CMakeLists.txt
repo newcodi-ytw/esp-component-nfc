@@ -80,8 +80,9 @@ set(nfc_lib_inc
 
 
 #example source
-set(EXAMPLE_DISC_LOOP FALSE)
-set(EXAMPLE_SIMPLE_ISO TRUE)
+set(EXAMPLE_SIMPLE_ISO FALSE)
+set(EXAMPLE_DISC_LOOP TRUE)
+set(EXAMPLE_MIFARE_C FALSE)
 
 if(EXAMPLE_DISC_LOOP)
     message(WARNING "**** EXAMPLE_DISC_LOOP ****")
@@ -132,8 +133,27 @@ if(EXAMPLE_SIMPLE_ISO)
         "examples/simplifiedAPI/inc"
     )
 endif()
+
+if(EXAMPLE_MIFARE_C)
+    message(WARNING "**** EXAMPLE_MIFARE_C ****")
+    list(APPEND compile_flags 
+        "-DEXAMPLE_MIFARE_C"
+    )
+    list(APPEND nfc_lib 
+        "examples/mifareClassic/inc"
+        "examples/mifareClassic/phApp_PN5180_Init.c"
+        "examples/mifareClassic/phApp_Init.c"
+        "examples/mifareClassic/phApp_Helper.c"
+        "examples/mifareClassic/NfcrdlibEx4_MIFAREClassic.c"
+
+        #nxp lib
+    )    
+    list(APPEND nfc_lib_inc
+        "examples/mifareClassic/inc"
+    )
+endif()
     
-if(EXAMPLE_SIMPLE_ISO)
+if(EXAMPLE_SIMPLE_ISO OR EXAMPLE_MIFARE_C)
 set(NXPBUILD_CRYPTO_KEY TRUE)
 else()
 set(NXPBUILD_CRYPTO_KEY FALSE)
