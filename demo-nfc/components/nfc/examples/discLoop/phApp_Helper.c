@@ -28,9 +28,9 @@
 *
 */
 
+#include <phCustomHelper.h>
 #include "phApp_Init.h"
 
-#include <phNfc_Example.h>
 #include <phOsal.h>
 
 /*******************************************************************************
@@ -76,7 +76,7 @@ void phApp_PrintTech(uint8_t TechType)
 * \param   num      data size to be print
 */
 #if 1
-#define phApp_Print_Buff(pBuff, num) PCD_HelpShowByte(":", pBuff, num)
+#define phApp_Print_Buff(pBuff, num) PCD_HelpShowByte(NULL, pBuff, num)
 #else
 void phApp_Print_Buff(uint8_t *pBuff, uint8_t num)
 {

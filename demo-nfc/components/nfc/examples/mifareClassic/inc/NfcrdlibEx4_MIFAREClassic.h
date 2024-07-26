@@ -25,12 +25,12 @@
 
 #ifdef PH_OSAL_FREERTOS
     #ifdef PHOSAL_FREERTOS_STATIC_MEM_ALLOCATION
-        #define MIFARECLASSIC_TASK_STACK        (1024)
+        #define MIFARECLASSIC_TASK_STACK        (1400/4)
     #else /* PHOSAL_FREERTOS_STATIC_MEM_ALLOCATION */
         #if defined( __PN74XXXX__) || defined(__PN76XX__)
             #define MIFARECLASSIC_TASK_STACK    (1200/4)
         #else /* defined( __PN74XXXX__) || defined(__PN76XX__) */
-            #define MIFARECLASSIC_TASK_STACK    1250
+            #define MIFARECLASSIC_TASK_STACK    (1024*2)
         #endif /* defined( __PN74XXXX__) || defined(__PN76XX__) */
     #endif /* PHOSAL_FREERTOS_STATIC_MEM_ALLOCATION */
     #define MIFARECLASSIC_TASK_PRIO             2

@@ -84,13 +84,9 @@
             #define  DEBUG_PRINTF(...) printf(__VA_ARGS__); fflush(stdout)
         #endif /* PHDRIVER_KINETIS_K82 */
     #else /* DEBUG */
-        // #define  DEBUG_PRINTF(...)
+        #define  DEBUG_PRINTF(...)
         #define  DEBUG_SCANF(...)
     #endif /* DEBUG */
-
-    #define DEBUG_PRINTF(fmt, ...)    do{\
-        esp_rom_printf("%s[%d]::%s: "fmt" \n", __FILENAME__, __LINE__, __FUNCTION__, ##__VA_ARGS__); \
-    }while(0);
 #else /* __PN76XX__ */
     #if (SEGGER_RTT_ENABLE == 1)
         #include "SEGGER_RTT.h"
@@ -147,7 +143,7 @@ extern phhalHw_Pn76xx_DataParams_t   * pHal;
 
 /**************************************************Prints if error is detected**************************************************************/
 /* Enable(1) / Disable(0) printing error/info */
-#define DETECT_ERROR 1
+#define DETECT_ERROR 0
 
 #if DETECT_ERROR
     #define DEBUG_ERROR_PRINT(x) x
@@ -160,14 +156,14 @@ extern phhalHw_Pn76xx_DataParams_t   * pHal;
 #define CHECK_STATUS(x)                                      \
     if ((x) != PH_ERR_SUCCESS)                               \
 {                                                            \
-    esp_rom_printf("Line: %d   Error - (0x%04X) has occurred : 0xCCEE CC-Component ID, EE-Error code. Refer-ph_Status.h\n", __LINE__, (x));    \
+    DEBUG_PRINTF("Line: %d   Error - (0x%04X) has occurred : 0xCCEE CC-Component ID, EE-Error code. Refer-ph_Status.h\n", __LINE__, (x));    \
 }
 
 /* prints if error is detected */
 #define CHECK_SUCCESS(x)              \
     if ((x) != PH_ERR_SUCCESS)        \
 {                                     \
-    esp_rom_printf("\nLine: %d   Error - (0x%04X) has occurred : 0xCCEE CC-Component ID, EE-Error code. Refer-ph_Status.h\n ", __LINE__, (x)); \
+    DEBUG_PRINTF("\nLine: %d   Error - (0x%04X) has occurred : 0xCCEE CC-Component ID, EE-Error code. Refer-ph_Status.h\n ", __LINE__, (x)); \
     return (x);                       \
 }
 
@@ -175,7 +171,7 @@ extern phhalHw_Pn76xx_DataParams_t   * pHal;
 #define CHECK_NFCLIB_STATUS(x)                               \
     if ((x) != PH_NFCLIB_STATUS_SUCCESS)                     \
 {                                                            \
-    esp_rom_printf("\nLine: %d   Error - (0x%04X) has occurred in NFCLIB\n ", __LINE__, (x)); \
+    DEBUG_PRINTF("\nLine: %d   Error - (0x%04X) has occurred in NFCLIB\n ", __LINE__, (x)); \
 }
 
 /*********************************************************************************************************************************************/

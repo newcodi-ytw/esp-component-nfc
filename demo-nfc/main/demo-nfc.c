@@ -18,8 +18,6 @@ void app_main(void)
 
     ConsoleStart();
 
-    // NFC_Run();
-
     while(1)
     {
         vTaskDelay(pdMS_TO_TICKS(100));

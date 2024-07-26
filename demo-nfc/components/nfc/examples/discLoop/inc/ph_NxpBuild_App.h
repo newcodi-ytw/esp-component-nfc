@@ -82,20 +82,20 @@
 
 /*********************************************************************************************************************************************************************************/
 
-// #define NXPBUILD__PHPAL_I14443P3A_SW                        /**< PAL ISO 14443-3A SW Component is included. */
+#define NXPBUILD__PHPAL_I14443P3A_SW                        /**< PAL ISO 14443-3A SW Component is included. */
 
-// #define NXPBUILD__PHPAL_I14443P3B_SW                        /**< PAL ISO 14443-3B SW Component is included. */
+#define NXPBUILD__PHPAL_I14443P3B_SW                        /**< PAL ISO 14443-3B SW Component is included. */
 
-// #define NXPBUILD__PHPAL_I14443P4A_SW                        /**< PAL ISO 14443-4A SW Component is included. */
+#define NXPBUILD__PHPAL_I14443P4A_SW                        /**< PAL ISO 14443-4A SW Component is included. */
 
-// #define NXPBUILD__PHPAL_I14443P4_SW                         /**< PAL ISO 14443-4 SW Component is included. */
+#define NXPBUILD__PHPAL_I14443P4_SW                         /**< PAL ISO 14443-4 SW Component is included. */
 
-// #define NXPBUILD__PHPAL_MIFARE_SW                           /**< PAL MIFARE SW Component is included */
+#define NXPBUILD__PHPAL_MIFARE_SW                           /**< PAL MIFARE SW Component is included */
 //#define NXPBUILD__PHPAL_MIFARE_STUB                       /**< PAL MIFARE STUB Component is included */
 
-// #define NXPBUILD__PHPAL_FELICA_SW                           /**< PAL Felica SW Component is included. */
+#define NXPBUILD__PHPAL_FELICA_SW                           /**< PAL Felica SW Component is included. */
 
-// #define NXPBUILD__PHPAL_SLI15693_SW                         /**< PAL SLI 15693 Component is included. */
+#define NXPBUILD__PHPAL_SLI15693_SW                         /**< PAL SLI 15693 Component is included. */
 #ifndef NXPBUILD__PHHAL_HW_PN7640
     #define NXPBUILD__PHPAL_I18000P3M3_SW                   /**< PAL ISO 18000p3m3 Component is included. */
 #endif /* NXPBUILD__PHHAL_HW_PN7640 */
@@ -193,7 +193,7 @@
 
 //#define NXPBUILD__PH_CIDMANAGER_SW                            /**< CID Manager SW Component is included. */
 
-// #define NXPBUILD__PH_KEYSTORE_SW                                /**< SW KeyStore Component is included. */
+#define NXPBUILD__PH_KEYSTORE_SW                                /**< SW KeyStore Component is included. */
 
 #if defined(NXPBUILD__PHHAL_HW_RC663) && !defined(NXPBUILD__PH_KEYSTORE_SW)
     #define NXPBUILD__PH_KEYSTORE_RC663                         /**< RC663 KeyStore Component is included. */
@@ -201,9 +201,9 @@
 
 //#define NXPBUILD__PH_NDA_MFDF                                 /**< MIFARE DESFire contactless IC */
 
-// #define NXPBUILD__PH_CRYPTOSYM_SW                             /**< Crypto Symbols SW Component is included. */
+#define NXPBUILD__PH_CRYPTOSYM_SW                             /**< Crypto Symbols SW Component is included. */
 
-// #define NXPBUILD__PH_CRYPTORNG_SW                             /**< Crypto RNG SW Component is included. */
+#define NXPBUILD__PH_CRYPTORNG_SW                             /**< Crypto RNG SW Component is included. */
 
 /*********************************************************************************************************************************************************************************/
 

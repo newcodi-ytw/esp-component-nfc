@@ -30,7 +30,7 @@ esp_err_t dal_spi_lockInit(void)
 
 esp_err_t dal_spi_transact(spi_device_handle_t dev, const void *tx, void *rx, int n)
 {
-    SPI_LOCK;
+    // SPI_LOCK;
 
     spi_transaction_t txn = {
         .length = n * 8,
@@ -42,6 +42,6 @@ esp_err_t dal_spi_transact(spi_device_handle_t dev, const void *tx, void *rx, in
     // esp_err_t ret = spi_device_polling_transmit(dev, &txn);
     // printf("SPI data transmitted\n");
 
-    SPI_UNLOCK;
+    // SPI_UNLOCK;
     return ret;
 }

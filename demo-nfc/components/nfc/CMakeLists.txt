@@ -81,8 +81,22 @@ set(nfc_lib_inc
 
 #example source
 set(EXAMPLE_SIMPLE_ISO FALSE)
-set(EXAMPLE_DISC_LOOP TRUE)
-set(EXAMPLE_MIFARE_C FALSE)
+set(EXAMPLE_DISC_LOOP FALSE)
+set(EXAMPLE_MIFARE_C TRUE)
+
+#supported protocol - XXXX disable
+set(NXPBUILD__PHHAL_HW_PN7640 FALSE)
+set(NXPBUILD__PHHAL_HW_PN76XX FALSE)
+
+#supported protocol - VVVV enable
+set(NXPBUILD_CRYPTO_KEY TRUE)
+set(NXPBUILD__PHPAL_I14443P3A_SW TRUE)
+set(NXPBUILD__PHPAL_I14443P3B_SW TRUE)
+set(NXPBUILD__PHPAL_I14443P4A_SW TRUE)
+set(NXPBUILD__PHPAL_I14443P4_SW TRUE)
+set(NXPBUILD__PHPAL_MIFARE_SW TRUE)
+set(NXPBUILD__PHPAL_FELICA_SW TRUE)
+set(NXPBUILD__PHPAL_SLI15693_SW TRUE)
 
 if(EXAMPLE_DISC_LOOP)
     message(WARNING "**** EXAMPLE_DISC_LOOP ****")
@@ -90,10 +104,12 @@ if(EXAMPLE_DISC_LOOP)
         "-DEXAMPLE_DISC_LOOP"
     )
     list(APPEND nfc_lib 
+        "examples/discLoop/NfcrdlibEx1_EmvcoProfile.c"
         "examples/discLoop/phApp_PN5180_Init.c"
         "examples/discLoop/phApp_Init.c"
         "examples/discLoop/phApp_Helper.c"
         
+        "examples/discLoop/NfcrdlibEx1_DiscoveryLoop.c"
         "examples/discLoop/phNfc_Example.c"
     )    
     list(APPEND nfc_lib_inc
@@ -152,32 +168,13 @@ if(EXAMPLE_MIFARE_C)
         "examples/mifareClassic/inc"
     )
 endif()
-    
-if(EXAMPLE_SIMPLE_ISO OR EXAMPLE_MIFARE_C)
-set(NXPBUILD_CRYPTO_KEY TRUE)
-else()
-set(NXPBUILD_CRYPTO_KEY FALSE)
-endif()
-
-#supported protocol - XXXX disable
-set(NXPBUILD__PHHAL_HW_PN7640 FALSE)
-set(NXPBUILD__PHHAL_HW_PN76XX FALSE)
-
-#supported protocol - VVVV enable
-set(NXPBUILD__PHPAL_I14443P3A_SW TRUE)
-set(NXPBUILD__PHPAL_I14443P3B_SW TRUE)
-set(NXPBUILD__PHPAL_I14443P4A_SW TRUE)
-set(NXPBUILD__PHPAL_I14443P4_SW TRUE)
-set(NXPBUILD__PHPAL_MIFARE_SW TRUE)
-set(NXPBUILD__PHPAL_FELICA_SW TRUE)
-set(NXPBUILD__PHPAL_SLI15693_SW TRUE)
 
 if(NXPBUILD_CRYPTO_KEY)
     message(WARNING "**** NXPBUILD_CRYPTO_KEY ****")
     list(APPEND compile_flags 
-        "-DNXPBUILD__PH_KEYSTORE_SW"
-        "-DNXPBUILD__PH_CRYPTOSYM_SW"
-        "-DNXPBUILD__PH_CRYPTORNG_SW"
+        # "-DNXPBUILD__PH_KEYSTORE_SW"
+        # "-DNXPBUILD__PH_CRYPTOSYM_SW"
+        # "-DNXPBUILD__PH_CRYPTORNG_SW"
     )
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phKeyStore/src/Sw/phKeyStore_Sw.c"
@@ -203,7 +200,7 @@ endif()
 if(NXPBUILD__PHPAL_I14443P3A_SW)
     message(WARNING "**** NXPBUILD__PHPAL_I14443P3A_SW ****")
     list(APPEND compile_flags 
-        "-DNXPBUILD__PHPAL_I14443P3A_SW"
+        # "-DNXPBUILD__PHPAL_I14443P3A_SW"
     )
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p3a/src/Sw/phpalI14443p3a_Sw.c"
@@ -214,7 +211,7 @@ endif()
 if(NXPBUILD__PHPAL_I14443P3B_SW)
     message(WARNING "**** NXPBUILD__PHPAL_I14443P3B_SW ****")
     list(APPEND compile_flags 
-        "-DNXPBUILD__PHPAL_I14443P3B_SW"
+        # "-DNXPBUILD__PHPAL_I14443P3B_SW"
     )
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p3b/src/Sw/phpalI14443p3b_Sw.c"
@@ -225,7 +222,7 @@ endif()
 if(NXPBUILD__PHPAL_I14443P4A_SW)
     message(WARNING "**** NXPBUILD__PHPAL_I14443P4A_SW ****")
     list(APPEND compile_flags 
-        "-DNXPBUILD__PHPAL_I14443P4A_SW"
+        # "-DNXPBUILD__PHPAL_I14443P4A_SW"
     )
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p4a/src/Sw/phpalI14443p4a_Sw.c"
@@ -236,7 +233,7 @@ endif()
 if(NXPBUILD__PHPAL_I14443P4_SW)
     message(WARNING "**** NXPBUILD__PHPAL_I14443P4_SW ****")
     list(APPEND compile_flags 
-        "-DNXPBUILD__PHPAL_I14443P4_SW"
+        # "-DNXPBUILD__PHPAL_I14443P4_SW"
     )
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalI14443p4/src/Sw/phpalI14443p4_Sw.c"
@@ -247,7 +244,7 @@ endif()
 if(NXPBUILD__PHPAL_MIFARE_SW)
     message(WARNING "**** DNXPBUILD__PHPAL_MIFARE_SW ****")
     list(APPEND compile_flags 
-        "-DNXPBUILD__PHPAL_MIFARE_SW"
+        # "-DNXPBUILD__PHPAL_MIFARE_SW"
     )
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalMifare/src/Sw/phpalMifare_Sw.c"
@@ -265,7 +262,7 @@ endif()
 if(NXPBUILD__PHPAL_FELICA_SW)
     message(WARNING "**** NXPBUILD__PHPAL_FELICA_SW ****")
     list(APPEND compile_flags 
-        "-DNXPBUILD__PHPAL_FELICA_SW"
+        # "-DNXPBUILD__PHPAL_FELICA_SW"
     )
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phalFelica/src/Sw/phalFelica_Sw.c"
@@ -279,7 +276,7 @@ endif()
 if(NXPBUILD__PHPAL_SLI15693_SW)
     message(WARNING "**** NXPBUILD__PHPAL_SLI15693_SW ****")
     list(APPEND compile_flags 
-        "-DNXPBUILD__PHPAL_SLI15693_SW"
+        # "-DNXPBUILD__PHPAL_SLI15693_SW"
     )
     list(APPEND nfc_lib 
         "nxp/NxpNfcRdLib/comps/phpalSli15693/src/Sw/phpalSli15693_Sw.c"

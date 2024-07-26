@@ -164,6 +164,7 @@ void CLIF_IRQHandler(void)
     if (phDriver_PinRead(PHDRIVER_PIN_IRQ, PH_DRIVER_PINFUNC_INTERRUPT))
     {
         phDriver_PinClearIntStatus(PHDRIVER_PIN_IRQ);
+
         /* Call application registered callback. */
         if (pHal->pRFISRCallback != NULL)
         {

@@ -28,17 +28,24 @@
 #endif /* ENABLE_DISC_CONFIG */
 
 #ifdef PH_OSAL_FREERTOS
-    #define EXAMPLE_TASK_STACK           (1024*2)
-    #define EXAMPLE_TASK_PRIO            2
+    #ifdef PHOSAL_FREERTOS_STATIC_MEM_ALLOCATION
+        #define DISC_DEMO_TASK_STACK         (1800/4)
+    #else /* PHOSAL_FREERTOS_STATIC_MEM_ALLOCATION */
+        #if defined( __PN74XXXX__) || defined(__PN76XX__)
+            #define DISC_DEMO_TASK_STACK     (1600/4)
+        #else /* defined( __PN74XXXX__) || defined(__PN76XX__) */
+            #define DISC_DEMO_TASK_STACK     (1024*2)
+        #endif /* defined( __PN74XXXX__) || defined(__PN76XX__) */
+    #endif /* PHOSAL_FREERTOS_STATIC_MEM_ALLOCATION */
+    #define DISC_DEMO_TASK_PRIO              2
 #endif /* PH_OSAL_FREERTOS */
 
 #ifdef PH_OSAL_LINUX
-#define EXAMPLE_TASK_STACK                0x20000
-#define EXAMPLE_TASK_PRIO                 0
+#define DISC_DEMO_TASK_STACK                0x20000
+#define DISC_DEMO_TASK_PRIO                 0
 #endif /* PH_OSAL_LINUX */
 
 
-void phNfc_Example_Init(void);
-void phNfc_Example_Main(void* pDataParams);
+int DiscoveryLoop_Demo_Main(void);
 
 #endif // __PH_NFC_EXAMPLE_H__

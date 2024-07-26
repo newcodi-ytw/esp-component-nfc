@@ -1,12 +1,53 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright 2016-2023 NXP                                                    */
+/*                                                                            */
+/* NXP Confidential. This software is owned or controlled by NXP and may only */
+/* be used strictly in accordance with the applicable license terms.          */
+/* By expressly accepting such terms or by downloading, installing,           */
+/* activating and/or otherwise using the software, you are agreeing that you  */
+/* have read, and that you agree to comply with and are bound by, such        */
+/* license terms. If you do not agree to be bound by the applicable license   */
+/* terms, then you may not retain, install, activate or otherwise use the     */
+/* software.                                                                  */
+/*----------------------------------------------------------------------------*/
+
+/** \file
+* Example Source for NfcrdlibEx1_DiscoveryLoop that uses the Discovery loop implementation.
+* By default Discovery Loop will work as per NFC Forum Activity Specification v2.2
+* which will configure the Reader in both POLL and LISTEN (only for Universal device)
+* modes of discovery loop.Displays detected tag information(like UID, SAK, Product Type)
+* and prints information when it gets activated as a target by an external Initiator/reader.
+*
+* By enabling "ENABLE_DISC_CONFIG" macro, few of the most common Discovery Loop configuration
+* are been updated to values defined in this Example.
+* By enabling "ENABLE_EMVCO_PROF", Discovery Loop will be configured as per EMVCo Polling
+* specification else the Discovery Loop will still be configured to NFC Forum but user defined
+* values as per this Application.
+*
+* NFC Forum Mode: Whenever multiple technologies are detected, example will select first
+* detected technology to resolve. Example will activate device at index zero whenever multiple
+* device is detected.
+*
+* For EMVCo profile, this example provide full EMVCo digital demonstration along with option to
+* use different SELECT PPSE Commands.
+*
+* Please refer Readme.txt file for Hardware Pin Configuration, Software Configuration and steps to build and
+* execute the project which is present in the same project directory.
+*
+* $Author$
+* $Revision$ (v07.10.00)
+* $Date$
+*/
+
 /**
 * Reader Library Headers
 */
-#include "phApp_Init.h"
+#include <phApp_Init.h>
 
 #include "phCustomHelper.h"
 
 /* Local headers */
-#include "phNfc_Example.h"
+#include <NfcrdlibEx1_DiscoveryLoop.h>
 #include <NfcrdlibEx1_EmvcoProfile.h>
 
 /*******************************************************************************
@@ -62,12 +103,12 @@ static phStatus_t LoadProfile(phacDiscLoop_Profile_t bProfile);
 **   Code
 *******************************************************************************/
 
-void phNfc_Example_Init(void)
+int DiscoveryLoop_Demo_Main(void)
 {
     do
     {
         phStatus_t status = PH_ERR_INTERNAL_ERROR;
-        phNfcLib_Status_t dwStatus;
+        phNfcLib_Status_t     dwStatus;
 #ifdef PH_PLATFORM_HAS_ICFRONTEND
         phNfcLib_AppContext_t AppContext = {0};
 #endif /* PH_PLATFORM_HAS_ICFRONTEND */
@@ -82,7 +123,7 @@ void phNfc_Example_Init(void)
         /* Perform OSAL Initialization. */
         (void)phOsal_Init();
 
-        DEBUG_LOG_UI("phNfc_Example_Init :");
+        DEBUG_LOG_UI("\n DiscoveryLoop Example: \n");
 
 #ifdef PH_PLATFORM_HAS_ICFRONTEND
         status = phbalReg_Init(&sBalParams, sizeof(phbalReg_Type_t));
@@ -96,8 +137,7 @@ void phNfc_Example_Init(void)
         /* Initialize library */
         dwStatus = phNfcLib_Init();
         CHECK_NFCLIB_STATUS(dwStatus);
-        if (dwStatus != PH_NFCLIB_STATUS_SUCCESS)
-            return;
+        if(dwStatus != PH_NFCLIB_STATUS_SUCCESS) break;
 
         /* Set the generic pointer */
         pHal = phNfcLib_GetDataParams(PH_COMP_HAL);
@@ -108,28 +148,28 @@ void phNfc_Example_Init(void)
         /* Initialize other components that are not initialized by NFCLIB and configure Discovery Loop. */
         status = phApp_Comp_Init(pDiscLoop);
         CHECK_STATUS(status);
-        if (status != PH_ERR_SUCCESS) break;
+        if(status != PH_ERR_SUCCESS) break;
 
         /* Perform Platform Init */
         status = phApp_Configure_IRQ();
         CHECK_STATUS(status);
-        if (status != PH_ERR_SUCCESS) break;
+        if(status != PH_ERR_SUCCESS) break;
 
 #ifndef PH_OSAL_NULLOS
 
         DiscLoop.pTaskName = (uint8_t *)bTaskName;
-        DiscLoop.pStackBuffer = NULL /* aDiscTaskBuffer */;
-        DiscLoop.stackSizeInNum = EXAMPLE_TASK_STACK;
-        DiscLoop.priority = EXAMPLE_TASK_PRIO;
-        phOsal_ThreadCreate(&DiscLoop.ThreadHandle, &DiscLoop, &phNfc_Example_Main, pDiscLoop);
+        DiscLoop.pStackBuffer = aDiscTaskBuffer;
+        DiscLoop.priority = DISC_DEMO_TASK_PRIO;
+        DiscLoop.stackSizeInNum = DISC_DEMO_TASK_STACK;
+        phOsal_ThreadCreate(&DiscLoop.ThreadHandle, &DiscLoop, &DiscoveryLoop_Demo, pDiscLoop);
 
         // phOsal_StartScheduler();
 
         // DEBUG_LOG_UI("RTOS Error : Scheduler exited. \n");
 #else
-        phNfc_Example_Main(pDiscLoop);
+        (void)DiscoveryLoop_Demo(pDiscLoop);
 #endif
-    } while (0);
+    } while(0);
 
     // while(bInfLoop); /* Comes here if initialization failure or scheduler exit due to error */
 
@@ -143,7 +183,7 @@ void phNfc_Example_Init(void)
 * \param   pDataParams      The discovery loop data parameters
 * \note    This function will never return
 */
-void phNfc_Example_Main(void  *pDataParams)
+void DiscoveryLoop_Demo(void  *pDataParams)
 {
     phStatus_t    status, statustmp;
     uint16_t      wEntryPoint;
@@ -183,20 +223,20 @@ void phNfc_Example_Main(void  *pDataParams)
     statustmp = phhalHw_FieldOff(pHal);
     CHECK_STATUS(statustmp);
 
-    while (1)
+    while(1)
     {
         /* Before polling set Discovery Poll State to Detection , as later in the code it can be changed to e.g. PHAC_DISCLOOP_POLL_STATE_REMOVAL*/
         statustmp = phacDiscLoop_SetConfig(pDataParams, PHAC_DISCLOOP_CONFIG_NEXT_POLL_STATE, PHAC_DISCLOOP_POLL_STATE_DETECTION);
         CHECK_STATUS(statustmp);
 
-    #if !defined(ENABLE_EMVCO_PROF) && defined(PH_EXAMPLE1_LPCD_ENABLE)
+#if !defined(ENABLE_EMVCO_PROF) && defined(PH_EXAMPLE1_LPCD_ENABLE)
 
-    #ifdef NXPBUILD__PHHAL_HW_RC663
+#ifdef NXPBUILD__PHHAL_HW_RC663
         if (wEntryPoint == PHAC_DISCLOOP_ENTRY_POINT_POLL)
-    #else
+#else
         /* Configure LPCD */
         if ((status & PH_ERR_MASK) == PHAC_DISCLOOP_LPCD_NO_TECH_DETECTED)
-    #endif
+#endif
         {
             status = phApp_ConfigureLPCD();
             CHECK_STATUS(status);
@@ -205,26 +245,22 @@ void phNfc_Example_Main(void  *pDataParams)
         /* Bool to enable LPCD feature. */
         status = phacDiscLoop_SetConfig(pDataParams, PHAC_DISCLOOP_CONFIG_ENABLE_LPCD, PH_ON);
         CHECK_STATUS(status);
-    #endif /* PH_EXAMPLE1_LPCD_ENABLE*/
+#endif /* PH_EXAMPLE1_LPCD_ENABLE*/
 
         /* Start discovery loop */
-        DEBUG_LOG_CORE("%d %d - s", wEntryPoint, status);
         status = phacDiscLoop_Run(pDataParams, wEntryPoint);
-        DEBUG_LOG_CORE("%d %d - e", wEntryPoint, status);
 
         if(bProfile == PHAC_DISCLOOP_PROFILE_EMVCO)
         {
-    #if defined(ENABLE_EMVCO_PROF)
+#if defined(ENABLE_EMVCO_PROF)
 
             EmvcoProfileProcess(pDataParams, status);
 
-    #endif /* ENABLE_EMVCO_PROF */
+#endif /* ENABLE_EMVCO_PROF */
         }
         else
         {
-            DEBUG_LOG_CORE("wEntryPoint:%d DiscLoopStatus:%d s", wEntryPoint, status);
             wEntryPoint = NFCForumProcess(wEntryPoint, status);
-            DEBUG_LOG_CORE("wEntryPoint:%d DiscLoopStatus:%d s", wEntryPoint, status);
 
             /* Set Poll Configuration */
             statustmp = phacDiscLoop_SetConfig(pDataParams, PHAC_DISCLOOP_CONFIG_PAS_POLL_TECH_CFG, bSavePollTechCfg);
@@ -235,7 +271,7 @@ void phNfc_Example_Main(void  *pDataParams)
             CHECK_STATUS(statustmp);
 
             /* Wait for field-off time-out */
-            statustmp = phhalHw_Wait(pHal, PHHAL_HW_TIME_MICROSECONDS, 1000*30);
+            statustmp = phhalHw_Wait(pHal, PHHAL_HW_TIME_MICROSECONDS, 5100);
             CHECK_STATUS(statustmp);
         }
     }

@@ -42,7 +42,9 @@ void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len){}
 #else
 void PCD_HelpShowByte(const char *prefix, uint8_t *data, uint32_t len)
 {
-    esp_rom_printf("%s(%d):\n", prefix, len);
+    if(prefix != NULL)
+        esp_rom_printf("%s(%d):\n", prefix, len);
+        
     if (len == 0) return;
 
     uint32_t i = 0;
