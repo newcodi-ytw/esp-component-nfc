@@ -81,8 +81,8 @@ set(nfc_lib_inc
 
 #example source
 set(EXAMPLE_SIMPLE_ISO FALSE)
-set(EXAMPLE_DISC_LOOP FALSE)
-set(EXAMPLE_MIFARE_C TRUE)
+set(EXAMPLE_DISC_LOOP TRUE)
+set(EXAMPLE_MIFARE_C FALSE)
 
 #supported protocol - XXXX disable
 set(NXPBUILD__PHHAL_HW_PN7640 FALSE)
@@ -99,6 +99,8 @@ set(NXPBUILD__PHPAL_FELICA_SW TRUE)
 set(NXPBUILD__PHPAL_SLI15693_SW TRUE)
 
 if(EXAMPLE_DISC_LOOP)
+    set(EXAMPLE_TEST_LOOP FALSE)
+
     message(WARNING "**** EXAMPLE_DISC_LOOP ****")
     list(APPEND compile_flags 
         "-DEXAMPLE_DISC_LOOP"
@@ -110,8 +112,15 @@ if(EXAMPLE_DISC_LOOP)
         "examples/discLoop/phApp_Helper.c"
         
         "examples/discLoop/NfcrdlibEx1_DiscoveryLoop.c"
-        "examples/discLoop/phNfc_Example.c"
-    )    
+    )
+    if(EXAMPLE_TEST_LOOP)
+        list(APPEND compile_flags 
+            "-DEXAMPLE_TEST_LOOP"
+        )
+        list(APPEND nfc_lib
+            "examples/discLoop/phNfc_Example.c"
+        )
+    endif()
     list(APPEND nfc_lib_inc
         "examples/discLoop/inc"
     )

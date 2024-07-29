@@ -2,6 +2,8 @@
 
 #ifdef EXAMPLE_DISC_LOOP
 #include "NfcrdlibEx1_DiscoveryLoop.h"
+#endif
+#ifdef EXAMPLE_TEST_LOOP
 #include "phNfc_Example.h"
 #endif
 
@@ -19,9 +21,14 @@ void NFC_Run(void)
     printf("NFC Run\n");
     
 #ifdef EXAMPLE_DISC_LOOP
-    // phNfc_Example_Init();
+#ifdef EXAMPLE_TEST_LOOP
+    phNfc_Example_Init();
+#else
     DiscoveryLoop_Demo_Main();
+#endif
 #endif  
+
+  
 
 #ifdef EXAMPLE_SIMPLE_ISO
     SimplifiedApiDemo_Main();
