@@ -2,17 +2,15 @@
 
 #ifdef EXAMPLE_DISC_LOOP
 #include "NfcrdlibEx1_DiscoveryLoop.h"
-#endif
 #ifdef EXAMPLE_TEST_LOOP
 #include "phNfc_Example.h"
 #endif
-
-#ifdef EXAMPLE_SIMPLE_ISO
+#elif EXAMPLE_SIMPLE_ISO
 #include "Nfcrdlib_SimplifiedApi_ISO.h"
-#endif
-
-#ifdef EXAMPLE_MIFARE_C
+#elif EXAMPLE_MIFARE_C
 #include "NfcrdlibEx4_MIFAREClassic.h"
+#elif EXAMPLE_NFCFORUM
+#include "NfcrdlibEx3_NFCForum.h"
 #endif
 
 #include "nfc.h"
@@ -26,16 +24,12 @@ void NFC_Run(void)
 #else
     DiscoveryLoop_Demo_Main();
 #endif
-#endif  
-
-  
-
-#ifdef EXAMPLE_SIMPLE_ISO
+#elif EXAMPLE_SIMPLE_ISO
     SimplifiedApiDemo_Main();
-#endif
-
-#ifdef EXAMPLE_MIFARE_C
+#elif EXAMPLE_MIFARE_C
     NfcrdlibEx4_MIFAREClassic_Main();
+#elif EXAMPLE_NFCFORUM
+    NfcrdlibEx3_NFCForum_Main();
 #endif
 
 }

@@ -244,6 +244,7 @@ void DiscoveryLoop_Demo(void  *pDataParams)
         /* Bool to enable LPCD feature. */
         status = phacDiscLoop_SetConfig(pDataParams, PHAC_DISCLOOP_CONFIG_ENABLE_LPCD, PH_ON);
         CHECK_STATUS(status);
+        DEBUG_LOG_UI("enable LPCD feature");
 #endif /* PH_EXAMPLE1_LPCD_ENABLE*/
 
         /* Start discovery loop */

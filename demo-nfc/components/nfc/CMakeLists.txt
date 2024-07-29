@@ -6,6 +6,7 @@ set(compile_flags
     "-DNXPBUILD__PHHAL_HW_PN5180"
     "-DPHDRIVER_PN5180_CUSTOM_DEV_BOARD"
 
+    "-DDEBUG"
     "-DPH_OSAL_FREERTOS"
 
     "-DNXPBUILD_CUSTOMER_HEADER_INCLUDED"
@@ -81,7 +82,8 @@ set(nfc_lib_inc
 
 #example source
 set(EXAMPLE_SIMPLE_ISO FALSE)
-set(EXAMPLE_DISC_LOOP TRUE)
+set(EXAMPLE_DISC_LOOP FALSE)
+set(EXAMPLE_NFCFORUM TRUE)
 set(EXAMPLE_MIFARE_C FALSE)
 
 #supported protocol - XXXX disable
@@ -97,34 +99,6 @@ set(NXPBUILD__PHPAL_I14443P4_SW TRUE)
 set(NXPBUILD__PHPAL_MIFARE_SW TRUE)
 set(NXPBUILD__PHPAL_FELICA_SW TRUE)
 set(NXPBUILD__PHPAL_SLI15693_SW TRUE)
-
-if(EXAMPLE_DISC_LOOP)
-    set(EXAMPLE_TEST_LOOP FALSE)
-
-    message(WARNING "**** EXAMPLE_DISC_LOOP ****")
-    list(APPEND compile_flags 
-        "-DEXAMPLE_DISC_LOOP"
-    )
-    list(APPEND nfc_lib 
-        "examples/discLoop/NfcrdlibEx1_EmvcoProfile.c"
-        "examples/discLoop/phApp_PN5180_Init.c"
-        "examples/discLoop/phApp_Init.c"
-        "examples/discLoop/phApp_Helper.c"
-        
-        "examples/discLoop/NfcrdlibEx1_DiscoveryLoop.c"
-    )
-    if(EXAMPLE_TEST_LOOP)
-        list(APPEND compile_flags 
-            "-DEXAMPLE_TEST_LOOP"
-        )
-        list(APPEND nfc_lib
-            "examples/discLoop/phNfc_Example.c"
-        )
-    endif()
-    list(APPEND nfc_lib_inc
-        "examples/discLoop/inc"
-    )
-endif()
 
 if(EXAMPLE_SIMPLE_ISO)
     message(WARNING "**** EXAMPLE_SIMPLE_ISO ****")
@@ -159,6 +133,34 @@ if(EXAMPLE_SIMPLE_ISO)
     )
 endif()
 
+if(EXAMPLE_DISC_LOOP)
+    set(EXAMPLE_TEST_LOOP FALSE)
+
+    message(WARNING "**** EXAMPLE_DISC_LOOP ****")
+    list(APPEND compile_flags 
+        "-DEXAMPLE_DISC_LOOP"
+    )
+    list(APPEND nfc_lib 
+        "examples/discLoop/NfcrdlibEx1_EmvcoProfile.c"
+        "examples/discLoop/phApp_PN5180_Init.c"
+        "examples/discLoop/phApp_Init.c"
+        "examples/discLoop/phApp_Helper.c"
+        
+        "examples/discLoop/NfcrdlibEx1_DiscoveryLoop.c"
+    )
+    if(EXAMPLE_TEST_LOOP)
+        list(APPEND compile_flags 
+            "-DEXAMPLE_TEST_LOOP"
+        )
+        list(APPEND nfc_lib
+            "examples/discLoop/phNfc_Example.c"
+        )
+    endif()
+    list(APPEND nfc_lib_inc
+        "examples/discLoop/inc"
+    )
+endif()
+
 if(EXAMPLE_MIFARE_C)
     message(WARNING "**** EXAMPLE_MIFARE_C ****")
     list(APPEND compile_flags 
@@ -175,6 +177,41 @@ if(EXAMPLE_MIFARE_C)
     )    
     list(APPEND nfc_lib_inc
         "examples/mifareClassic/inc"
+    )
+endif()
+
+if(EXAMPLE_NFCFORUM)
+    message(WARNING "**** EXAMPLE_NFCFORUM ****")
+    list(APPEND compile_flags 
+        "-DEXAMPLE_NFCFORUM"
+    )
+    list(APPEND nfc_lib 
+        "examples/nfcForum/inc"
+        "examples/nfcForum/cards.c"
+        "examples/nfcForum/phApp_PN5180_Init.c"
+        "examples/nfcForum/phApp_Init.c"
+        "examples/nfcForum/phApp_Helper.c"
+        "examples/nfcForum/NfcrdlibEx3_NFCForum.c"
+
+        #nxp lib
+        "nxp/NxpNfcRdLib/comps/phpalI18092mT/src/Sw/phpalI18092mT_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phpalI18092mT/src/Sw/phpalI18092mT_Sw_Int.c"
+        "nxp/NxpNfcRdLib/comps/phpalI18092mT/src/phpalI18092mT.c"
+
+        "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Int.c"
+        "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Transport_Connection.c"
+        "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Transport_Connectionless.c"
+        "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Timers.c"
+        "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Mac.c"
+        "nxp/NxpNfcRdLib/comps/phlnLlcp/src/Sw/phlnLlcp_Sw_Transport.c"
+        "nxp/NxpNfcRdLib/comps/phlnLlcp/src/phlnLlcp.c"
+
+        "nxp/NxpNfcRdLib/comps/phnpSnep/src/Sw/phnpSnep_Sw.c"
+        "nxp/NxpNfcRdLib/comps/phnpSnep/src/phnpSnep.c"
+    )    
+    list(APPEND nfc_lib_inc
+        "examples/nfcForum/inc"
     )
 endif()
 

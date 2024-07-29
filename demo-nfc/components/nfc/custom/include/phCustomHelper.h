@@ -1,6 +1,8 @@
 #if !defined(__PH_CUSTOM_HELPER_H__)
 #define __PH_CUSTOM_HELPER_H__
 
+#include <esp_log.h>
+
 #include <ph_TypeDefs.h>
 
 // #define DEBUG_LOG_CORE_ENABLE
